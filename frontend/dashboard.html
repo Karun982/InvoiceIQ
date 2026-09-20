@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard — InvoiceIQ</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="brand">
+            <div class="brand-icon">IQ</div>
+            <span>InvoiceIQ</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a class="active" href="dashboard.html">Dashboard</a>
+            <a href="upload.html">Upload</a>
+            <a href="chat.html">AI Chat</a>
+        </div>
+
+    </nav>
+
+
+    <main class="dashboard">
+
+        <div class="page-header">
+
+            <div>
+                <span class="badge">BUSINESS OVERVIEW</span>
+
+                <h1>Dashboard</h1>
+
+                <p>
+                    Monitor your business performance from
+                    your processed documents.
+                </p>
+            </div>
+
+            <a href="upload.html" class="btn btn-primary">
+                + Upload Document
+            </a>
+
+        </div>
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <span>Total Revenue</span>
+                <strong id="revenue">₹0</strong>
+                <small>From sales</small>
+            </div>
+
+            <div class="stat-card">
+                <span>Total Purchases</span>
+                <strong id="purchases">₹0</strong>
+                <small>Business purchases</small>
+            </div>
+
+            <div class="stat-card">
+                <span>Total Expenses</span>
+                <strong id="expenses">₹0</strong>
+                <small>Recorded expenses</small>
+            </div>
+
+            <div class="stat-card profit">
+                <span>Estimated Profit</span>
+                <strong id="profit">₹0</strong>
+                <small>Revenue − purchases − expenses</small>
+            </div>
+
+        </section>
+
+
+        <section class="dashboard-grid">
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Recent Documents</h2>
+                        <p>Your latest processed documents</p>
+                    </div>
+
+                    <a href="upload.html">Upload</a>
+                </div>
+
+                <div id="documents-container">
+
+                    <div class="empty-state">
+                        <div class="empty-icon">↑</div>
+                        <h3>No documents yet</h3>
+                        <p>
+                            Upload your first invoice to start
+                            generating business insights.
+                        </p>
+
+                        <a href="upload.html" class="btn btn-primary">
+                            Upload Invoice
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Document Breakdown</h2>
+                        <p>Documents by category</p>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+
+                    <div class="breakdown-row">
+                        <span>
+                            <i class="dot sales"></i>
+                            Sales
+                        </span>
+
+                        <strong id="sales-count">0</strong>
+                    </div>
+
+                    <div class="breakdown-row">
+                        <span>
+                            <i class="dot purchases"></i>
+                            Purchases
+                        </span>
+
+                        <strong id="purchase-count">0</strong>
+                    </div>
+
+                    <div class="breakdown-row">
+                        <span>
+                            <i class="dot expenses"></i>
+                            Expenses
+                        </span>
+
+                        <strong id="expense-count">0</strong>
+                    </div>
+
+                    <div class="breakdown-row">
+                        <span>
+                            <i class="dot other"></i>
+                            Other
+                        </span>
+
+                        <strong id="other-count">0</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="quick-actions">
+
+            <h2>Quick Actions</h2>
+
+            <div class="action-grid">
+
+                <a href="upload.html" class="action-card">
+                    <span class="action-number">01</span>
+                    <h3>Upload Document</h3>
+                    <p>
+                        Process a new invoice or business document.
+                    </p>
+                </a>
+
+                <a href="chat.html" class="action-card">
+                    <span class="action-number">02</span>
+                    <h3>Ask AI</h3>
+                    <p>
+                        Ask questions about your business data.
+                    </p>
+                </a>
+
+                <a href="index.html" class="action-card">
+                    <span class="action-number">03</span>
+                    <h3>Learn More</h3>
+                    <p>
+                        Explore what InvoiceIQ can do.
+                    </p>
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/dashboard.js"></script>
+
+</body>
+</html>

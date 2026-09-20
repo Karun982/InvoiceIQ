@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Upload — InvoiceIQ</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="brand">
+            <div class="brand-icon">IQ</div>
+            <span>InvoiceIQ</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a class="active" href="upload.html">Upload</a>
+            <a href="chat.html">AI Chat</a>
+        </div>
+
+    </nav>
+
+
+    <main class="upload-page">
+
+        <div class="page-header centered">
+
+            <span class="badge">DOCUMENT PROCESSING</span>
+
+            <h1>Upload a document</h1>
+
+            <p>
+                Upload an invoice, purchase document,
+                expense receipt or sales document.
+            </p>
+
+        </div>
+
+
+        <section class="upload-container">
+
+            <div
+                class="drop-zone"
+                id="drop-zone"
+            >
+
+                <div class="upload-icon">
+                    ↑
+                </div>
+
+                <h2>Drop your document here</h2>
+
+                <p>
+                    or choose a file from your computer
+                </p>
+
+                <label class="btn btn-primary choose-btn">
+
+                    Choose File
+
+                    <input
+                        type="file"
+                        id="file-input"
+                        accept=".pdf,.png,.jpg,.jpeg"
+                        hidden
+                    >
+
+                </label>
+
+                <span class="file-info">
+                    PDF, PNG, JPG or JPEG
+                </span>
+
+            </div>
+
+
+            <div
+                class="selected-file"
+                id="selected-file"
+                style="display:none;"
+            >
+
+                <div>
+                    <strong id="file-name">
+                        document.pdf
+                    </strong>
+
+                    <span id="file-size">
+                        0 KB
+                    </span>
+                </div>
+
+                <button
+                    class="remove-file"
+                    id="remove-file"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary process-btn"
+                id="process-btn"
+                disabled
+            >
+                Process Document
+            </button>
+
+
+            <div
+                class="processing"
+                id="processing"
+                style="display:none;"
+            >
+
+                <div class="loader"></div>
+
+                <h3>Processing your document</h3>
+
+                <p>
+                    Azure AI is extracting and analyzing
+                    your document...
+                </p>
+
+            </div>
+
+
+            <div
+                class="upload-result"
+                id="upload-result"
+                style="display:none;"
+            ></div>
+
+        </section>
+
+
+        <section class="process-info">
+
+            <h2>What happens after upload?</h2>
+
+            <div class="process-steps">
+
+                <div>
+                    <span>01</span>
+                    <h3>Extract</h3>
+                    <p>
+                        Azure Document Intelligence extracts
+                        invoice fields.
+                    </p>
+                </div>
+
+                <div>
+                    <span>02</span>
+                    <h3>Classify</h3>
+                    <p>
+                        GPT-5-mini determines the document
+                        category.
+                    </p>
+                </div>
+
+                <div>
+                    <span>03</span>
+                    <h3>Store</h3>
+                    <p>
+                        Structured data is saved in InvoiceIQ.
+                    </p>
+                </div>
+
+                <div>
+                    <span>04</span>
+                    <h3>Analyze</h3>
+                    <p>
+                        Business analytics are automatically
+                        updated.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/upload.js"></script>
+
+</body>
+</html>
