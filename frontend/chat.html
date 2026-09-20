@@ -1,143 +1,730 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>AI Chat — InvoiceIQ</title>
+    <title>AI Assistant — InvoiceIQ</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css?v=11"
+    >
+
+    <script src="js/theme.js"></script>
+
+    <style>
+
+        /* =====================================================
+           CHAT PAGE IMPROVEMENTS
+        ===================================================== */
+
+        .chat-page-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        .chat-panel {
+            height: calc(100vh - 245px);
+            min-height: 620px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+
+        .chat-header {
+            flex: 0 0 auto;
+        }
+
+
+        .messages {
+            flex: 1;
+            min-height: 0;
+
+            overflow-y: auto;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+
+            gap: 18px;
+
+            padding: 28px 30px 20px;
+        }
+
+
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+
+        .messages::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: 20px;
+        }
+
+
+        .messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+
+        /*
+         * When the conversation is still short,
+         * keep it visually close to the composer
+         * instead of leaving a huge empty area.
+         */
+
+        .message:first-child {
+            margin-top: auto;
+        }
+
+
+        .message {
+            width: fit-content;
+            max-width: min(760px, 85%);
+        }
+
+
+        .message-content {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+
+        .message-content p {
+            margin: 0;
+        }
+
+
+        .suggestions {
+            flex: 0 0 auto;
+
+            padding: 12px 22px 14px;
+
+            display: flex;
+            gap: 8px;
+
+            overflow-x: auto;
+
+            border-top: 1px solid var(--border);
+
+            background: var(--surface);
+        }
+
+
+        .suggestions::-webkit-scrollbar {
+            height: 4px;
+        }
+
+
+        .suggestions::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: 10px;
+        }
+
+
+        .suggestions button {
+            flex: 0 0 auto;
+
+            white-space: nowrap;
+
+            padding: 9px 13px;
+
+            border: 1px solid var(--border);
+            border-radius: 999px;
+
+            background: var(--surface-2);
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 600;
+
+            transition:
+                color .2s ease,
+                border-color .2s ease,
+                background .2s ease,
+                transform .2s ease;
+        }
+
+
+        .suggestions button:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: var(--primary-soft);
+
+            transform: translateY(-1px);
+        }
+
+
+        .chat-form {
+            flex: 0 0 auto;
+
+            padding: 14px 18px;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            background: var(--surface);
+
+            border-top: 1px solid var(--border);
+        }
+
+
+        .chat-form input {
+            height: 50px;
+
+            padding: 0 17px;
+
+            border-radius: 14px;
+
+            background: var(--surface-2);
+        }
+
+
+        .chat-form .btn {
+            height: 50px;
+            min-width: 90px;
+        }
+
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            margin-top: 4px;
+
+            color: var(--green);
+            font-size: 10px;
+        }
+
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 0 4px var(--green-soft);
+        }
+
+
+        @media (max-width: 800px) {
+
+            .chat-panel {
+                height: calc(100vh - 210px);
+                min-height: 500px;
+            }
+
+
+            .messages {
+                padding: 20px 15px 15px;
+            }
+
+
+            .message {
+                max-width: 92%;
+            }
+
+
+            .chat-form {
+                padding: 10px;
+            }
+
+
+            .chat-form .btn {
+                min-width: 70px;
+            }
+
+        }
+
+
+        @media (max-width: 520px) {
+
+            .chat-page-actions {
+                width: 100%;
+            }
+
+
+            .chat-page-actions .btn {
+                flex: 1;
+            }
+
+
+            .chat-form input {
+                min-width: 0;
+            }
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar">
 
-        <div class="brand">
-            <div class="brand-icon">IQ</div>
-            <span>InvoiceIQ</span>
+<!-- =====================================================
+     TOP NAVIGATION
+===================================================== -->
+
+<nav class="navbar">
+
+
+    <a
+        href="index.html"
+        class="brand">
+
+        <span class="brand-mark">
+            IQ
+        </span>
+
+        InvoiceIQ
+
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="upload.html">
+            Documents
+        </a>
+
+        <a href="chat.html">
+            AI Assistant
+        </a>
+
+    </div>
+
+
+    <div class="nav-actions">
+
+        <button
+            class="theme-toggle"
+            data-theme-toggle
+            aria-label="Toggle dark mode">
+
+            ☾
+
+        </button>
+
+    </div>
+
+
+</nav>
+
+
+
+<!-- =====================================================
+     APPLICATION
+===================================================== -->
+
+<div class="app-layout">
+
+
+
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-brand">
+            InvoiceIQ Workspace
         </div>
 
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="upload.html">Upload</a>
-            <a class="active" href="chat.html">AI Chat</a>
+
+        <div class="sidebar-section">
+            Workspace
         </div>
 
-    </nav>
+
+        <a
+            href="dashboard.html"
+            class="sidebar-link">
+
+            <span class="sidebar-icon">
+                ⌂
+            </span>
+
+            <span>
+                Overview
+            </span>
+
+        </a>
 
 
-    <!-- Chat Page -->
-    <main class="chat-page">
+        <a
+            href="upload.html"
+            class="sidebar-link">
 
-        <div class="page-header centered">
+            <span class="sidebar-icon">
+                ↑
+            </span>
 
-            <span class="badge">AI BUSINESS ASSISTANT</span>
+            <span>
+                Documents
+            </span>
 
-            <h1>Ask InvoiceIQ</h1>
+        </a>
+
+
+        <a
+            href="chat.html"
+            class="sidebar-link active">
+
+            <span class="sidebar-icon">
+                ✦
+            </span>
+
+            <span>
+                AI Assistant
+            </span>
+
+        </a>
+
+
+
+        <div class="sidebar-section">
+            System
+        </div>
+
+
+        <a
+            href="index.html"
+            class="sidebar-link">
+
+            <span class="sidebar-icon">
+                ↗
+            </span>
+
+            <span>
+                Home
+            </span>
+
+        </a>
+
+
+
+        <div class="sidebar-bottom">
+
+            <strong>
+                BuisnessAgent
+            </strong>
 
             <p>
-                Ask questions about your revenue, purchases,
-                expenses and estimated profit.
+                Ask questions about your stored
+                business information.
             </p>
 
         </div>
 
 
-        <!-- Chat Container -->
-        <section class="chat-container">
+    </aside>
 
-            <!-- Messages -->
-            <div
-                class="messages"
-                id="messages"
-            >
 
-                <!-- Initial AI message -->
-                <div class="message ai">
 
-                    <div class="message-avatar">
-                        IQ
-                    </div>
+    <!-- =================================================
+         MAIN
+    ================================================== -->
 
-                    <div class="message-content">
+    <main class="app-main">
 
-                        <span class="message-label">
-                            InvoiceIQ AI
-                        </span>
 
-                        <p>
-                            Hello! I can analyze your business
-                            data and answer questions about
-                            revenue, purchases, expenses and
-                            estimated profit.
-                        </p>
+        <!-- =============================================
+             PAGE HEADER
+        ============================================== -->
+
+        <div class="app-top">
+
+
+            <div>
+
+                <div class="breadcrumb">
+
+                    Workspace /
+                    <strong>
+                        AI Assistant
+                    </strong>
+
+                </div>
+
+
+                <h1 class="page-title">
+                    Ask your business
+                </h1>
+
+
+                <p class="page-subtitle">
+                    Get answers from the financial information
+                    stored in InvoiceIQ.
+                </p>
+
+            </div>
+
+
+
+            <div class="chat-page-actions">
+
+
+                <a
+                    href="dashboard.html"
+                    class="btn btn-secondary">
+
+                    ← Dashboard
+
+                </a>
+
+
+                <a
+                    href="upload.html"
+                    class="btn btn-primary">
+
+                    + Upload document
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             CHAT PANEL
+        ================================================== -->
+
+        <section class="panel chat-panel">
+
+
+
+            <!-- =============================================
+                 CHAT HEADER
+            ============================================== -->
+
+            <div class="chat-header">
+
+
+                <div class="ai-avatar">
+                    IQ
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        InvoiceIQ AI
+                    </strong>
+
+
+                    <div class="chat-status">
+
+                        <span class="status-dot"></span>
+
+                        Connected to business data
 
                     </div>
 
                 </div>
 
+
             </div>
 
 
-            <!-- Suggested Questions -->
+
+            <!-- =============================================
+                 MESSAGES
+            ============================================== -->
+
+            <div
+                id="messages"
+                class="messages">
+
+
+                <!-- INITIAL AI MESSAGE -->
+
+                <div class="message ai">
+
+
+                    <div class="message-avatar">
+                        IQ
+                    </div>
+
+
+                    <div class="message-content">
+
+
+                        <span class="message-label">
+                            INVOICEIQ AI
+                        </span>
+
+
+                        <p>
+                            Hello. I can answer questions about
+                            your revenue, purchases, expenses
+                            and estimated profit.
+                        </p>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =============================================
+                 QUICK QUESTIONS
+            ============================================== -->
+
             <div class="suggestions">
 
-                <button type="button">
+
+                <button
+                    type="button"
+                    onclick="useSuggestion('What is my total revenue?')">
+
                     What is my total revenue?
+
                 </button>
 
-                <button type="button">
+
+                <button
+                    type="button"
+                    onclick="useSuggestion('How much did we spend on purchases?')">
+
                     How much did we spend on purchases?
+
                 </button>
 
-                <button type="button">
+
+                <button
+                    type="button"
+                    onclick="useSuggestion('What are our total expenses?')">
+
                     What are our total expenses?
+
                 </button>
 
-                <button type="button">
+
+                <button
+                    type="button"
+                    onclick="useSuggestion('What is our estimated profit?')">
+
                     What is our estimated profit?
+
                 </button>
 
-                <button type="button">
+
+                <button
+                    type="button"
+                    onclick="useSuggestion('Give me a business summary.')">
+
                     Give me a business summary.
+
                 </button>
+
 
             </div>
 
 
-            <!-- Chat Input -->
+
+            <!-- =============================================
+                 MESSAGE COMPOSER
+            ============================================== -->
+
             <form
                 id="chat-form"
-                class="chat-form"
-            >
+                class="chat-form">
+
 
                 <input
-                    type="text"
                     id="chat-input"
+                    type="text"
                     placeholder="Ask a business question..."
                     autocomplete="off"
-                >
+                    aria-label="Ask a business question">
+
 
                 <button
-                    type="submit"
                     class="btn btn-primary"
-                >
-                    Send
+                    type="submit">
+
+                    Send →
+
                 </button>
+
 
             </form>
 
+
         </section>
+
 
     </main>
 
 
-    <script src="js/chat.js"></script>
+</div>
+
+
+
+<!-- =====================================================
+     SUGGESTION HELPER
+===================================================== -->
+
+<script>
+
+function useSuggestion(text) {
+
+    const input =
+        document.getElementById("chat-input");
+
+    if (!input) {
+        return;
+    }
+
+    input.value = text;
+
+    input.focus();
+
+}
+
+</script>
+
+
+
+<!-- =====================================================
+     CHAT JAVASCRIPT
+===================================================== -->
+
+<script src="js/chat.js"></script>
+
 
 </body>
+
 </html>

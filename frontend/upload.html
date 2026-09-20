@@ -1,199 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Upload — InvoiceIQ</title>
+    <title>Documents — InvoiceIQ</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=10">
+
+    <script src="js/theme.js"></script>
 
 </head>
 
+
 <body>
 
-    <nav class="navbar">
 
-        <div class="brand">
-            <div class="brand-icon">IQ</div>
-            <span>InvoiceIQ</span>
+<!-- =====================================================
+     TOP NAVIGATION
+===================================================== -->
+
+<nav class="navbar">
+
+
+    <a href="index.html" class="brand">
+
+        <span class="brand-mark">
+            IQ
+        </span>
+
+        InvoiceIQ
+
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="upload.html">
+            Documents
+        </a>
+
+        <a href="chat.html">
+            AI Assistant
+        </a>
+
+    </div>
+
+
+    <div class="nav-actions">
+
+        <button
+            class="theme-toggle"
+            data-theme-toggle
+            aria-label="Toggle dark mode">
+
+            ☾
+
+        </button>
+
+    </div>
+
+
+</nav>
+
+
+
+<!-- =====================================================
+     APPLICATION LAYOUT
+===================================================== -->
+
+<div class="app-layout">
+
+
+
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-brand">
+            InvoiceIQ Workspace
         </div>
 
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a class="active" href="upload.html">Upload</a>
-            <a href="chat.html">AI Chat</a>
+
+        <div class="sidebar-section">
+            Workspace
         </div>
 
-    </nav>
+
+        <a
+            href="dashboard.html"
+            class="sidebar-link">
+
+            <span class="sidebar-icon">
+                ⌂
+            </span>
+
+            <span>
+                Overview
+            </span>
+
+        </a>
 
 
-    <main class="upload-page">
+        <a
+            href="upload.html"
+            class="sidebar-link active">
 
-        <div class="page-header centered">
+            <span class="sidebar-icon">
+                ↑
+            </span>
 
-            <span class="badge">DOCUMENT PROCESSING</span>
+            <span>
+                Documents
+            </span>
 
-            <h1>Upload a document</h1>
+        </a>
+
+
+        <a
+            href="chat.html"
+            class="sidebar-link">
+
+            <span class="sidebar-icon">
+                ✦
+            </span>
+
+            <span>
+                AI Assistant
+            </span>
+
+        </a>
+
+
+
+        <div class="sidebar-section">
+            System
+        </div>
+
+
+        <a
+            href="index.html"
+            class="sidebar-link">
+
+            <span class="sidebar-icon">
+                ↗
+            </span>
+
+            <span>
+                Home
+            </span>
+
+        </a>
+
+
+
+        <div class="sidebar-bottom">
+
+            <strong>
+                InvoiceIQ AI
+            </strong>
 
             <p>
-                Upload an invoice, purchase document,
-                expense receipt or sales document.
+                Upload once. Extract automatically.
+                Analyze instantly.
             </p>
 
         </div>
 
 
-        <section class="upload-container">
-
-            <div
-                class="drop-zone"
-                id="drop-zone"
-            >
-
-                <div class="upload-icon">
-                    ↑
-                </div>
-
-                <h2>Drop your document here</h2>
-
-                <p>
-                    or choose a file from your computer
-                </p>
-
-                <label class="btn btn-primary choose-btn">
-
-                    Choose File
-
-                    <input
-                        type="file"
-                        id="file-input"
-                        accept=".pdf,.png,.jpg,.jpeg"
-                        hidden
-                    >
-
-                </label>
-
-                <span class="file-info">
-                    PDF, PNG, JPG or JPEG
-                </span>
-
-            </div>
+    </aside>
 
 
-            <div
-                class="selected-file"
-                id="selected-file"
-                style="display:none;"
-            >
 
-                <div>
-                    <strong id="file-name">
-                        document.pdf
+    <!-- =================================================
+         MAIN CONTENT
+    ================================================== -->
+
+    <main class="app-main">
+
+
+
+        <!-- =============================================
+             PAGE HEADER
+        ============================================== -->
+
+        <div class="app-top">
+
+
+            <div>
+
+                <div class="breadcrumb">
+
+                    Workspace /
+                    <strong>
+                        Documents
                     </strong>
 
-                    <span id="file-size">
-                        0 KB
-                    </span>
                 </div>
 
-                <button
-                    class="remove-file"
-                    id="remove-file"
-                >
-                    ×
-                </button>
 
-            </div>
+                <h1 class="page-title">
+                    Process a document
+                </h1>
 
 
-            <button
-                class="btn btn-primary process-btn"
-                id="process-btn"
-                disabled
-            >
-                Process Document
-            </button>
-
-
-            <div
-                class="processing"
-                id="processing"
-                style="display:none;"
-            >
-
-                <div class="loader"></div>
-
-                <h3>Processing your document</h3>
-
-                <p>
-                    Azure AI is extracting and analyzing
-                    your document...
+                <p class="page-subtitle">
+                    Upload an invoice and let InvoiceIQ
+                    handle the extraction.
                 </p>
 
             </div>
 
 
+
+            <!-- =========================================
+                 PAGE ACTIONS
+            ========================================== -->
+
             <div
-                class="upload-result"
-                id="upload-result"
-                style="display:none;"
-            ></div>
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    flex-wrap:wrap;
+                ">
 
-        </section>
+
+                <a
+                    href="dashboard.html"
+                    class="btn btn-secondary">
+
+                    ← Dashboard
+
+                </a>
 
 
-        <section class="process-info">
+                <a
+                    href="chat.html"
+                    class="btn btn-primary">
 
-            <h2>What happens after upload?</h2>
+                    AI Assistant →
 
-            <div class="process-steps">
+                </a>
 
-                <div>
-                    <span>01</span>
-                    <h3>Extract</h3>
-                    <p>
-                        Azure Document Intelligence extracts
-                        invoice fields.
-                    </p>
-                </div>
-
-                <div>
-                    <span>02</span>
-                    <h3>Classify</h3>
-                    <p>
-                        GPT-5-mini determines the document
-                        category.
-                    </p>
-                </div>
-
-                <div>
-                    <span>03</span>
-                    <h3>Store</h3>
-                    <p>
-                        Structured data is saved in InvoiceIQ.
-                    </p>
-                </div>
-
-                <div>
-                    <span>04</span>
-                    <h3>Analyze</h3>
-                    <p>
-                        Business analytics are automatically
-                        updated.
-                    </p>
-                </div>
 
             </div>
 
-        </section>
+
+        </div>
+
+
+
+        <!-- =================================================
+             UPLOAD AREA
+        ================================================== -->
+
+        <div class="upload-layout">
+
+
+
+            <!-- =============================================
+                 MAIN UPLOAD PANEL
+            ============================================== -->
+
+            <section class="panel upload-panel">
+
+
+                <!-- DROPZONE -->
+
+                <div
+                    id="dropzone"
+                    class="dropzone">
+
+
+                    <div class="upload-icon">
+                        ↑
+                    </div>
+
+
+                    <h2>
+                        Drop your document here
+                    </h2>
+
+
+                    <p>
+                        Upload a PDF, JPG, JPEG or PNG invoice.
+                        InvoiceIQ will extract and classify
+                        the information.
+                    </p>
+
+
+                    <button
+                        id="choose-btn"
+                        class="btn btn-primary"
+                        type="button">
+
+                        Choose document
+
+                    </button>
+
+
+                    <!-- HIDDEN FILE INPUT -->
+
+                    <input
+                        id="file-input"
+                        class="file-input"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+
+
+                </div>
+
+
+
+                <!-- SELECTED FILE -->
+
+                <div
+                    id="file-name"
+                    class="file-name"
+                    style="display:none;">
+
+                </div>
+
+
+
+                <!-- PROCESS BUTTON -->
+
+                <div class="upload-action">
+
+
+                    <button
+                        id="upload-btn"
+                        class="btn btn-primary"
+                        type="button"
+                        style="display:none;">
+
+                        Process document →
+
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- RESULT -->
+
+                <div
+                    id="result"
+                    class="result-card"
+                    style="display:none;">
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =============================================
+                 PROCESSING PIPELINE
+            ============================================== -->
+
+            <section class="panel">
+
+
+                <div class="panel-header">
+
+                    <h2>
+                        Processing pipeline
+                    </h2>
+
+                </div>
+
+
+                <div class="panel-body">
+
+
+                    <div class="process-steps">
+
+
+
+                        <!-- STEP 01 -->
+
+                        <div class="process-step">
+
+
+                            <div class="step-number">
+                                01
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    Extract
+                                </strong>
+
+                                <p>
+                                    Read invoice fields
+                                    and line items.
+                                </p>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- STEP 02 -->
+
+                        <div class="process-step">
+
+
+                            <div class="step-number">
+                                02
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    Classify
+                                </strong>
+
+                                <p>
+                                    Identify sales,
+                                    purchase or expense.
+                                </p>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- STEP 03 -->
+
+                        <div class="process-step">
+
+
+                            <div class="step-number">
+                                03
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    Store
+                                </strong>
+
+                                <p>
+                                    Save structured
+                                    information securely.
+                                </p>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- STEP 04 -->
+
+                        <div class="process-step">
+
+
+                            <div class="step-number">
+                                04
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    Analyze
+                                </strong>
+
+                                <p>
+                                    Make the information
+                                    available to AI.
+                                </p>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+        </div>
+
 
     </main>
 
 
-    <script src="js/upload.js"></script>
+</div>
+
+
+
+<!-- =====================================================
+     UPLOAD JAVASCRIPT
+===================================================== -->
+
+<script src="js/upload.js"></script>
+
 
 </body>
+
 </html>

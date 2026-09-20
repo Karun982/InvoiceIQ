@@ -1,202 +1,486 @@
-const API_URL = "http://127.0.0.1:8000";
+document.addEventListener("DOMContentLoaded", () => {
 
-const dropZone = document.getElementById("drop-zone");
-const fileInput = document.getElementById("file-input");
+    const API_URL = "http://127.0.0.1:8000";
 
-const selectedFile = document.getElementById("selected-file");
-const fileName = document.getElementById("file-name");
-const fileSize = document.getElementById("file-size");
+    const input = document.getElementById("file-input");
+    const dropzone = document.getElementById("dropzone");
+    const chooseBtn = document.getElementById("choose-btn");
+    const uploadBtn = document.getElementById("upload-btn");
+    const nameBox = document.getElementById("file-name");
+    const result = document.getElementById("result");
 
-const removeFileButton = document.getElementById("remove-file");
-const processButton = document.getElementById("process-btn");
-
-const processing = document.getElementById("processing");
-const result = document.getElementById("upload-result");
+    let selectedFile = null;
 
 
-let currentFile = null;
+    /* =====================================================
+       SAFETY CHECK
+    ===================================================== */
 
-
-function selectFile(file) {
-
-    if (!file) {
+    if (
+        !input ||
+        !dropzone ||
+        !chooseBtn ||
+        !uploadBtn ||
+        !nameBox ||
+        !result
+    ) {
+        console.error("InvoiceIQ upload elements are missing.");
         return;
     }
 
-    const allowed = [
-        "application/pdf",
-        "image/png",
-        "image/jpeg"
-    ];
 
-    if (!allowed.includes(file.type)) {
-        alert("Please select a PDF, PNG or JPG file.");
-        return;
-    }
+    /* =====================================================
+       CHOOSE FILE
+    ===================================================== */
 
-    currentFile = file;
+    chooseBtn.addEventListener("click", (event) => {
 
-    fileName.textContent = file.name;
+        event.preventDefault();
 
-    const sizeKB = (file.size / 1024).toFixed(1);
+        input.value = "";
 
-    fileSize.textContent = `${sizeKB} KB`;
+        input.click();
 
-    selectedFile.style.display = "flex";
-
-    processButton.disabled = false;
-
-    result.style.display = "none";
-}
+    });
 
 
-fileInput.addEventListener("change", () => {
+    /* =====================================================
+       FILE SELECTED
+    ===================================================== */
 
-    selectFile(fileInput.files[0]);
+    input.addEventListener("change", () => {
 
-});
+        const file = input.files && input.files[0];
 
+        if (file) {
+            selectFile(file);
+        }
 
-dropZone.addEventListener("dragover", (event) => {
-
-    event.preventDefault();
-
-    dropZone.classList.add("dragover");
-
-});
-
-
-dropZone.addEventListener("dragleave", () => {
-
-    dropZone.classList.remove("dragover");
-
-});
+    });
 
 
-dropZone.addEventListener("drop", (event) => {
+    /* =====================================================
+       DRAG & DROP
+    ===================================================== */
 
-    event.preventDefault();
+    ["dragenter", "dragover"].forEach(eventName => {
 
-    dropZone.classList.remove("dragover");
+        dropzone.addEventListener(eventName, (event) => {
 
-    const file = event.dataTransfer.files[0];
+            event.preventDefault();
+            event.stopPropagation();
 
-    selectFile(file);
+            dropzone.classList.add("dragover");
 
-});
+        });
 
-
-removeFileButton.addEventListener("click", () => {
-
-    currentFile = null;
-
-    fileInput.value = "";
-
-    selectedFile.style.display = "none";
-
-    processButton.disabled = true;
-
-});
+    });
 
 
-processButton.addEventListener("click", async () => {
+    ["dragleave", "drop"].forEach(eventName => {
 
-    if (!currentFile) {
-        return;
-    }
+        dropzone.addEventListener(eventName, (event) => {
 
-    processButton.disabled = true;
+            event.preventDefault();
+            event.stopPropagation();
 
-    processing.style.display = "block";
+            dropzone.classList.remove("dragover");
 
-    result.style.display = "none";
+        });
 
-
-    const formData = new FormData();
-
-    formData.append("file", currentFile);
+    });
 
 
-    try {
+    dropzone.addEventListener("drop", (event) => {
 
-        const response = await fetch(
-            `${API_URL}/api/documents/upload`,
-            {
-                method: "POST",
-                body: formData
-            }
-        );
+        const files = event.dataTransfer.files;
+
+        if (!files || files.length === 0) {
+            return;
+        }
+
+        selectFile(files[0]);
+
+    });
 
 
-        const data = await response.json();
+    /* =====================================================
+       SELECT FILE
+    ===================================================== */
 
+    function selectFile(file) {
 
-        if (!response.ok) {
-            throw new Error(
-                data.detail || "Document processing failed."
-            );
+        if (!file) {
+            return;
         }
 
 
-        result.style.display = "block";
-
-        result.innerHTML = `
-            <h3>Document processed successfully</h3>
-
-            <p>
-                <strong>Document:</strong>
-                ${data.document.transaction_id || "N/A"}
-            </p>
-
-            <p>
-                <strong>Type:</strong>
-                ${data.document.document_type}
-            </p>
-
-            <p>
-                <strong>Party:</strong>
-                ${data.document.party_name || "N/A"}
-            </p>
-
-            <p>
-                <strong>Total:</strong>
-                ${data.document.currency || ""}
-                ${data.document.total_amount || 0}
-            </p>
-
-            <br>
-
-            <a
-                href="dashboard.html"
-                class="btn btn-primary"
-            >
-                View Dashboard
-            </a>
-        `;
+        const allowedTypes = [
+            "application/pdf",
+            "image/jpeg",
+            "image/jpg",
+            "image/png"
+        ];
 
 
-    } catch (error) {
+        const allowedExtensions = [
+            ".pdf",
+            ".jpg",
+            ".jpeg",
+            ".png"
+        ];
 
-        result.style.display = "block";
 
-        result.style.borderColor = "#6b3038";
+        const fileName = file.name.toLowerCase();
 
-        result.style.background = "#1c0e11";
+        const validType =
+            allowedTypes.includes(file.type) ||
+            allowedExtensions.some(ext =>
+                fileName.endsWith(ext)
+            );
 
-        result.innerHTML = `
-            <h3>Processing failed</h3>
 
-            <p>
-                ${error.message}
-            </p>
-        `;
+        if (!validType) {
 
-    } finally {
+            showError(
+                "Please select a PDF, JPG, JPEG or PNG file."
+            );
 
-        processing.style.display = "none";
+            return;
+        }
 
-        processButton.disabled = false;
+
+        selectedFile = file;
+
+
+        nameBox.textContent =
+            `Selected: ${file.name}`;
+
+
+        nameBox.style.display = "block";
+
+
+        uploadBtn.style.display = "inline-flex";
+
+        uploadBtn.disabled = false;
+
+        uploadBtn.textContent =
+            "Process document →";
+
+
+        result.style.display = "none";
+
+        result.innerHTML = "";
+
+
+        dropzone.classList.add("file-selected");
 
     }
+
+
+    /* =====================================================
+       UPLOAD
+    ===================================================== */
+
+    uploadBtn.addEventListener("click", async (event) => {
+
+        event.preventDefault();
+
+
+        if (!selectedFile) {
+
+            showError(
+                "Please choose a document first."
+            );
+
+            return;
+        }
+
+
+        uploadBtn.disabled = true;
+
+        uploadBtn.textContent =
+            "Processing...";
+
+
+        result.style.display = "block";
+
+        result.innerHTML = `
+            <div>
+                <strong>Processing document...</strong>
+                <p style="margin-top:6px;">
+                    InvoiceIQ is extracting and analyzing your document.
+                </p>
+            </div>
+        `;
+
+
+        try {
+
+            const formData = new FormData();
+
+            formData.append(
+                "file",
+                selectedFile
+            );
+
+
+            const response = await fetch(
+                `${API_URL}/api/documents/upload`,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+            let data;
+
+            try {
+
+                data = await response.json();
+
+            } catch {
+
+                throw new Error(
+                    "The server returned an invalid response."
+                );
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    "Document upload failed."
+                );
+
+            }
+
+
+            const document =
+                data.document || data;
+
+
+            showSuccess(document);
+
+
+        } catch (error) {
+
+            console.error(
+                "InvoiceIQ upload error:",
+                error
+            );
+
+
+            showError(
+                error.message ||
+                "Unable to process the document."
+            );
+
+
+        } finally {
+
+            uploadBtn.disabled = false;
+
+            uploadBtn.textContent =
+                "Process document →";
+
+        }
+
+    });
+
+
+    /* =====================================================
+       SUCCESS
+    ===================================================== */
+
+    function showSuccess(document) {
+
+        const total =
+            Number(
+                document.total_amount || 0
+            );
+
+
+        result.style.display = "block";
+
+
+        result.innerHTML = `
+
+            <div>
+
+                <h3 style="
+                    margin-bottom:18px;
+                    font-family:'Space Grotesk',sans-serif;
+                ">
+                    ✓ Document processed
+                </h3>
+
+
+                <div style="
+                    display:grid;
+                    grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+                    gap:12px;
+                ">
+
+
+                    <div style="
+                        padding:14px;
+                        border:1px solid var(--border);
+                        border-radius:12px;
+                        background:var(--surface);
+                    ">
+
+                        <small style="
+                            display:block;
+                            color:var(--muted);
+                            font-size:10px;
+                            margin-bottom:5px;
+                        ">
+                            DOCUMENT TYPE
+                        </small>
+
+                        <strong>
+                            ${escapeHtml(
+                                document.document_type || "—"
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div style="
+                        padding:14px;
+                        border:1px solid var(--border);
+                        border-radius:12px;
+                        background:var(--surface);
+                    ">
+
+                        <small style="
+                            display:block;
+                            color:var(--muted);
+                            font-size:10px;
+                            margin-bottom:5px;
+                        ">
+                            TRANSACTION ID
+                        </small>
+
+                        <strong>
+                            ${escapeHtml(
+                                document.transaction_id || "—"
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div style="
+                        padding:14px;
+                        border:1px solid var(--border);
+                        border-radius:12px;
+                        background:var(--surface);
+                    ">
+
+                        <small style="
+                            display:block;
+                            color:var(--muted);
+                            font-size:10px;
+                            margin-bottom:5px;
+                        ">
+                            PARTY
+                        </small>
+
+                        <strong>
+                            ${escapeHtml(
+                                document.party_name || "—"
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div style="
+                        padding:14px;
+                        border:1px solid var(--border);
+                        border-radius:12px;
+                        background:var(--surface);
+                    ">
+
+                        <small style="
+                            display:block;
+                            color:var(--muted);
+                            font-size:10px;
+                            margin-bottom:5px;
+                        ">
+                            TOTAL
+                        </small>
+
+                        <strong>
+                            ₹${total.toLocaleString("en-IN")}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+        `;
+
+    }
+
+
+    /* =====================================================
+       ERROR
+    ===================================================== */
+
+    function showError(message) {
+
+        result.style.display = "block";
+
+
+        result.innerHTML = `
+
+            <div>
+
+                <strong style="
+                    color:var(--red);
+                ">
+                    Upload failed
+                </strong>
+
+                <p style="
+                    margin-top:7px;
+                    color:var(--muted);
+                ">
+                    ${escapeHtml(message)}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       HTML ESCAPE
+    ===================================================== */
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
 
 });

@@ -1,162 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard — InvoiceIQ</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=10">
+    <script src="js/theme.js"></script>
+
 </head>
+
 
 <body>
 
-    <nav class="navbar">
+<nav class="navbar">
 
-        <div class="brand">
-            <div class="brand-icon">IQ</div>
-            <span>InvoiceIQ</span>
-        </div>
+    <a href="index.html" class="brand">
+        <span class="brand-mark">IQ</span>
+        InvoiceIQ
+    </a>
 
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a class="active" href="dashboard.html">Dashboard</a>
-            <a href="upload.html">Upload</a>
-            <a href="chat.html">AI Chat</a>
-        </div>
+    <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="upload.html">Documents</a>
+        <a href="chat.html">AI Assistant</a>
+    </div>
 
-    </nav>
+    <div class="nav-actions">
+
+        <button
+            class="theme-toggle"
+            data-theme-toggle>
+            ☾
+        </button>
+
+    </div>
+
+</nav>
 
 
-    <main class="dashboard">
+<div class="app-layout">
 
-        <div class="page-header">
 
-            <div>
-                <span class="badge">BUSINESS OVERVIEW</span>
+<aside class="sidebar">
 
-                <h1>Dashboard</h1>
+    <div class="sidebar-brand">
+        InvoiceIQ Workspace
+    </div>
 
-                <p>
-                    Monitor your business performance from
-                    your processed documents.
-                </p>
+
+    <div class="sidebar-section">
+        Workspace
+    </div>
+
+
+    <a
+        href="dashboard.html"
+        class="sidebar-link active">
+
+        <span class="sidebar-icon">⌂</span>
+        <span>Overview</span>
+
+    </a>
+
+
+    <a
+        href="upload.html"
+        class="sidebar-link">
+
+        <span class="sidebar-icon">↑</span>
+        <span>Documents</span>
+
+    </a>
+
+
+    <a
+        href="chat.html"
+        class="sidebar-link">
+
+        <span class="sidebar-icon">✦</span>
+        <span>AI Assistant</span>
+
+    </a>
+
+
+    <div class="sidebar-section">
+        System
+    </div>
+
+
+    <a
+        href="index.html"
+        class="sidebar-link">
+
+        <span class="sidebar-icon">↗</span>
+        <span>Home</span>
+
+    </a>
+
+
+    <div class="sidebar-bottom">
+
+        <strong>InvoiceIQ AI</strong>
+
+        <p>
+            Intelligent document processing
+            and business analytics.
+        </p>
+
+    </div>
+
+</aside>
+
+
+<main class="app-main">
+
+
+    <div class="app-top">
+
+        <div>
+
+            <div class="breadcrumb">
+                Workspace / <strong>Overview</strong>
             </div>
 
-            <a href="upload.html" class="btn btn-primary">
-                + Upload Document
+            <h1 class="page-title">
+                Business overview
+            </h1>
+
+            <p class="page-subtitle">
+                Your financial activity at a glance.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <a
+                href="upload.html"
+                class="btn btn-primary">
+
+                + Upload document
+
             </a>
 
         </div>
 
+    </div>
 
-        <section class="stats-grid">
 
-            <div class="stat-card">
-                <span>Total Revenue</span>
-                <strong id="revenue">₹0</strong>
-                <small>From sales</small>
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                TOTAL REVENUE
+            </span>
+
+            <div
+                id="revenue"
+                class="stat-value">
+                ₹0
             </div>
 
-            <div class="stat-card">
-                <span>Total Purchases</span>
-                <strong id="purchases">₹0</strong>
-                <small>Business purchases</small>
+            <div class="stat-icon">
+                ↗
             </div>
 
-            <div class="stat-card">
-                <span>Total Expenses</span>
-                <strong id="expenses">₹0</strong>
-                <small>Recorded expenses</small>
+            <div class="stat-foot">
+                From sales documents
             </div>
 
-            <div class="stat-card profit">
-                <span>Estimated Profit</span>
-                <strong id="profit">₹0</strong>
-                <small>Revenue − purchases − expenses</small>
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                PURCHASES
+            </span>
+
+            <div
+                id="purchases"
+                class="stat-value">
+                ₹0
+            </div>
+
+            <div class="stat-icon">
+                ↓
+            </div>
+
+            <div class="stat-foot">
+                Supplier spending
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                EXPENSES
+            </span>
+
+            <div
+                id="expenses"
+                class="stat-value">
+                ₹0
+            </div>
+
+            <div class="stat-icon">
+                ◌
+            </div>
+
+            <div class="stat-foot">
+                Business expenses
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                EST. PROFIT
+            </span>
+
+            <div
+                id="profit"
+                class="stat-value">
+                ₹0
+            </div>
+
+            <div class="stat-icon">
+                ◆
+            </div>
+
+            <div class="stat-foot">
+                Revenue − purchases − expenses
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    Financial overview
+                </h2>
+
+                <span id="doc-count">
+                    0 documents
+                </span>
+
+            </div>
+
+
+            <div class="panel-body">
+
+                <div id="chart" class="chart">
+                </div>
+
             </div>
 
         </section>
 
 
-        <section class="dashboard-grid">
+        <section class="panel">
 
-            <div class="panel">
+            <div class="panel-header">
 
-                <div class="panel-header">
-                    <div>
-                        <h2>Recent Documents</h2>
-                        <p>Your latest processed documents</p>
-                    </div>
+                <h2>
+                    Recent documents
+                </h2>
 
-                    <a href="upload.html">Upload</a>
-                </div>
-
-                <div id="documents-container">
-
-                    <div class="empty-state">
-                        <div class="empty-icon">↑</div>
-                        <h3>No documents yet</h3>
-                        <p>
-                            Upload your first invoice to start
-                            generating business insights.
-                        </p>
-
-                        <a href="upload.html" class="btn btn-primary">
-                            Upload Invoice
-                        </a>
-                    </div>
-
-                </div>
+                <a
+                    href="upload.html"
+                    class="badge">
+                    Upload
+                </a>
 
             </div>
 
 
-            <div class="panel">
+            <div class="panel-body">
 
-                <div class="panel-header">
-                    <div>
-                        <h2>Document Breakdown</h2>
-                        <p>Documents by category</p>
-                    </div>
-                </div>
+                <div
+                    id="documents"
+                    class="document-list">
 
-                <div class="breakdown">
-
-                    <div class="breakdown-row">
-                        <span>
-                            <i class="dot sales"></i>
-                            Sales
-                        </span>
-
-                        <strong id="sales-count">0</strong>
-                    </div>
-
-                    <div class="breakdown-row">
-                        <span>
-                            <i class="dot purchases"></i>
-                            Purchases
-                        </span>
-
-                        <strong id="purchase-count">0</strong>
-                    </div>
-
-                    <div class="breakdown-row">
-                        <span>
-                            <i class="dot expenses"></i>
-                            Expenses
-                        </span>
-
-                        <strong id="expense-count">0</strong>
-                    </div>
-
-                    <div class="breakdown-row">
-                        <span>
-                            <i class="dot other"></i>
-                            Other
-                        </span>
-
-                        <strong id="other-count">0</strong>
+                    <div class="empty">
+                        Loading...
                     </div>
 
                 </div>
@@ -166,44 +313,16 @@
         </section>
 
 
-        <section class="quick-actions">
-
-            <h2>Quick Actions</h2>
-
-            <div class="action-grid">
-
-                <a href="upload.html" class="action-card">
-                    <span class="action-number">01</span>
-                    <h3>Upload Document</h3>
-                    <p>
-                        Process a new invoice or business document.
-                    </p>
-                </a>
-
-                <a href="chat.html" class="action-card">
-                    <span class="action-number">02</span>
-                    <h3>Ask AI</h3>
-                    <p>
-                        Ask questions about your business data.
-                    </p>
-                </a>
-
-                <a href="index.html" class="action-card">
-                    <span class="action-number">03</span>
-                    <h3>Learn More</h3>
-                    <p>
-                        Explore what InvoiceIQ can do.
-                    </p>
-                </a>
-
-            </div>
-
-        </section>
-
-    </main>
+    </div>
 
 
-    <script src="js/dashboard.js"></script>
+</main>
+
+</div>
+
+
+<script src="js/dashboard.js"></script>
 
 </body>
+
 </html>
