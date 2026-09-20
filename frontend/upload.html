@@ -4,11 +4,15 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
     <title>Documents — InvoiceIQ</title>
 
-    <link rel="stylesheet" href="css/style.css?v=10">
+    <link
+        rel="stylesheet"
+        href="css/style.css?v=12">
 
     <script src="js/theme.js"></script>
 
@@ -42,7 +46,9 @@
             Dashboard
         </a>
 
-        <a href="upload.html">
+        <a
+            href="upload.html"
+            class="active">
             Documents
         </a>
 
@@ -76,7 +82,6 @@
 ===================================================== -->
 
 <div class="app-layout">
-
 
 
     <!-- =================================================
@@ -188,10 +193,9 @@
     <main class="app-main">
 
 
-
-        <!-- =============================================
+        <!-- =================================================
              PAGE HEADER
-        ============================================== -->
+        ================================================== -->
 
         <div class="app-top">
 
@@ -201,6 +205,7 @@
                 <div class="breadcrumb">
 
                     Workspace /
+
                     <strong>
                         Documents
                     </strong>
@@ -209,22 +214,18 @@
 
 
                 <h1 class="page-title">
-                    Process a document
+                    Process documents
                 </h1>
 
 
                 <p class="page-subtitle">
-                    Upload an invoice and let InvoiceIQ
-                    handle the extraction.
+                    Select one or multiple invoices and let
+                    InvoiceIQ process them automatically.
                 </p>
 
             </div>
 
 
-
-            <!-- =========================================
-                 PAGE ACTIONS
-            ========================================== -->
 
             <div
                 style="
@@ -267,10 +268,9 @@
         <div class="upload-layout">
 
 
-
-            <!-- =============================================
+            <!-- =================================================
                  MAIN UPLOAD PANEL
-            ============================================== -->
+            ================================================== -->
 
             <section class="panel upload-panel">
 
@@ -288,14 +288,15 @@
 
 
                     <h2>
-                        Drop your document here
+                        Drop your documents here
                     </h2>
 
 
                     <p>
-                        Upload a PDF, JPG, JPEG or PNG invoice.
-                        InvoiceIQ will extract and classify
-                        the information.
+                        Select one or multiple PDF, JPG,
+                        JPEG or PNG invoices. InvoiceIQ
+                        will extract and classify them
+                        automatically.
                     </p>
 
 
@@ -304,36 +305,63 @@
                         class="btn btn-primary"
                         type="button">
 
-                        Choose document
+                        Choose documents
 
                     </button>
 
 
-                    <!-- HIDDEN FILE INPUT -->
+                    <!-- =================================================
+                         MULTI FILE INPUT
+                    ================================================== -->
 
                     <input
                         id="file-input"
                         class="file-input"
                         type="file"
-                        accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+                        multiple
+                        accept="
+                            .pdf,
+                            .jpg,
+                            .jpeg,
+                            .png,
+                            application/pdf,
+                            image/jpeg,
+                            image/png
+                        ">
 
 
                 </div>
 
 
 
-                <!-- SELECTED FILE -->
+                <!-- =================================================
+                     SELECTED FILES
+                ================================================== -->
 
                 <div
                     id="file-name"
                     class="file-name"
                     style="display:none;">
 
+
+                    <div class="selected-files-title">
+                        Selected documents
+                    </div>
+
+
+                    <div
+                        id="selected-files-list"
+                        class="selected-files-list">
+                    </div>
+
+
                 </div>
 
 
 
-                <!-- PROCESS BUTTON -->
+                <!-- =================================================
+                     PROCESS BUTTON
+                ================================================== -->
 
                 <div class="upload-action">
 
@@ -344,7 +372,7 @@
                         type="button"
                         style="display:none;">
 
-                        Process document →
+                        Process documents →
 
                     </button>
 
@@ -353,7 +381,9 @@
 
 
 
-                <!-- RESULT -->
+                <!-- =================================================
+                     RESULT
+                ================================================== -->
 
                 <div
                     id="result"
@@ -367,9 +397,9 @@
 
 
 
-            <!-- =============================================
+            <!-- =================================================
                  PROCESSING PIPELINE
-            ============================================== -->
+            ================================================== -->
 
             <section class="panel">
 
@@ -389,11 +419,9 @@
                     <div class="process-steps">
 
 
-
                         <!-- STEP 01 -->
 
                         <div class="process-step">
-
 
                             <div class="step-number">
                                 01
@@ -413,7 +441,6 @@
 
                             </div>
 
-
                         </div>
 
 
@@ -421,7 +448,6 @@
                         <!-- STEP 02 -->
 
                         <div class="process-step">
-
 
                             <div class="step-number">
                                 02
@@ -441,7 +467,6 @@
 
                             </div>
 
-
                         </div>
 
 
@@ -449,7 +474,6 @@
                         <!-- STEP 03 -->
 
                         <div class="process-step">
-
 
                             <div class="step-number">
                                 03
@@ -469,7 +493,6 @@
 
                             </div>
 
-
                         </div>
 
 
@@ -477,7 +500,6 @@
                         <!-- STEP 04 -->
 
                         <div class="process-step">
-
 
                             <div class="step-number">
                                 04
@@ -496,7 +518,6 @@
                                 </p>
 
                             </div>
-
 
                         </div>
 
@@ -522,9 +543,12 @@
 
 <!-- =====================================================
      UPLOAD JAVASCRIPT
+     
+     v=12 forces browser to load the new
+     multi-document upload.js
 ===================================================== -->
 
-<script src="js/upload.js"></script>
+<script src="js/upload.js?v=20"></script>
 
 
 </body>

@@ -1462,3 +1462,1114 @@ button {
         height: calc(100vh - 180px);
     }
 }
+
+/* =====================================================
+   CLICKABLE DOCUMENTS
+===================================================== */
+
+.document-clickable {
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+}
+
+.document-clickable:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+}
+
+.document-clickable:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+/* =====================================================
+   DOCUMENT DETAILS MODAL
+===================================================== */
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.document-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+}
+
+.document-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.document-modal-backdrop {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.72);
+
+    backdrop-filter: blur(8px);
+}
+
+
+.document-modal-card {
+    position: relative;
+    z-index: 2;
+
+    width: min(850px, 100%);
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.45);
+
+    transform: translateY(15px) scale(0.98);
+
+    transition:
+        transform 0.2s ease;
+}
+
+.document-modal.show
+.document-modal-card {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/* =====================================================
+   MODAL HEADER
+===================================================== */
+
+.document-modal-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 24px 26px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.document-modal-label {
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    color: var(--muted);
+
+    margin-bottom: 6px;
+}
+
+
+.document-modal-header h2 {
+    margin: 0;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
+
+    font-size: 24px;
+}
+
+
+.document-modal-close {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    background: var(--surface-2);
+
+    color: var(--text);
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.document-modal-close:hover {
+    border-color: var(--accent);
+}
+
+
+/* =====================================================
+   MODAL CONTENT
+===================================================== */
+
+.document-modal-content {
+    padding: 26px;
+}
+
+
+.document-detail-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+.detail-box {
+    padding: 16px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    background: var(--surface-2);
+}
+
+
+.detail-box span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    color: var(--muted);
+}
+
+
+.detail-box strong {
+    display: block;
+
+    font-size: 14px;
+
+    color: var(--text);
+}
+
+
+.detail-total {
+    font-size: 19px !important;
+}
+
+
+/* =====================================================
+   DETAILS SECTION
+===================================================== */
+
+.details-section {
+    margin-top: 24px;
+}
+
+
+.details-section-title {
+    margin-bottom: 10px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    color: var(--muted);
+}
+
+
+.payment-status-box {
+    padding: 14px 16px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    background: var(--surface-2);
+
+    font-size: 13px;
+
+    color: var(--text);
+}
+
+
+/* =====================================================
+   ITEMS TABLE
+===================================================== */
+
+.details-table-wrap {
+    overflow-x: auto;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+}
+
+
+.details-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 12px;
+}
+
+
+.details-table th {
+    padding: 13px 14px;
+
+    text-align: left;
+
+    font-size: 9px;
+
+    letter-spacing: 0.8px;
+
+    color: var(--muted);
+
+    background: var(--surface-2);
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.details-table td {
+    padding: 14px;
+
+    color: var(--text);
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.details-table tr:last-child td {
+    border-bottom: none;
+}
+
+
+.details-table th:not(:first-child),
+.details-table td:not(:first-child) {
+    text-align: right;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.document-loading {
+    min-height: 220px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--muted);
+}
+
+
+.document-spinner {
+    width: 32px;
+    height: 32px;
+
+    margin-bottom: 14px;
+
+    border: 3px solid var(--border);
+
+    border-top-color: var(--accent);
+
+    border-radius: 50%;
+
+    animation:
+        invoiceiq-spin 0.8s linear infinite;
+}
+
+
+@keyframes invoiceiq-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.document-error {
+    padding: 20px;
+
+    border: 1px solid
+        rgba(239, 68, 68, 0.35);
+
+    border-radius: 12px;
+
+    color: var(--red);
+
+    background:
+        rgba(239, 68, 68, 0.08);
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .document-modal {
+        padding: 12px;
+    }
+
+
+    .document-modal-card {
+        max-height: 94vh;
+
+        border-radius: 16px;
+    }
+
+
+    .document-modal-header {
+        padding: 18px;
+    }
+
+
+    .document-modal-content {
+        padding: 18px;
+    }
+
+
+    .document-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .document-modal-header h2 {
+        font-size: 19px;
+    }
+
+}
+
+/* =====================================================
+   FINANCIAL OVERVIEW CHART — FIX
+===================================================== */
+
+#chart {
+    width: 100%;
+    min-height: 300px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+
+    gap: 28px;
+
+    padding: 30px 30px 20px;
+
+    box-sizing: border-box;
+}
+
+
+/* Individual chart column */
+
+#chart .chart-col {
+    flex: 1;
+
+    min-width: 120px;
+
+    height: 250px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    position: relative;
+}
+
+
+/* Bar area */
+
+#chart .chart-stack {
+    width: 100%;
+    max-width: 90px;
+
+    height: 180px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    position: relative;
+}
+
+
+/* Actual bar */
+
+#chart .chart-bar {
+    width: 56px;
+
+    min-height: 5px;
+
+    border-radius: 10px 10px 4px 4px;
+
+    transition:
+        height 0.4s ease,
+        transform 0.2s ease;
+}
+
+
+#chart .chart-bar:hover {
+    transform: scaleX(1.08);
+}
+
+
+/* Revenue */
+
+#chart .chart-bar.revenue {
+    background: var(--primary);
+}
+
+
+/* Purchases / Expenses */
+
+#chart .chart-bar.expense {
+    background: #6366f1;
+}
+
+
+/* Labels BELOW the chart */
+
+#chart .chart-label {
+    position: static;
+
+    width: 100%;
+
+    margin-top: 16px;
+
+    text-align: center;
+
+    line-height: 1.6;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    color: var(--text);
+
+    white-space: normal;
+}
+
+
+/* Amount */
+
+#chart .chart-label::first-line {
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   FIX FINANCIAL OVERVIEW PANEL
+===================================================== */
+
+.panel:has(#chart) {
+    overflow: hidden;
+}
+
+
+/* Chart container */
+
+#chart {
+    overflow: visible;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    #chart {
+        gap: 12px;
+
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+
+    #chart .chart-col {
+        min-width: 90px;
+    }
+
+
+    #chart .chart-stack {
+        height: 160px;
+    }
+
+
+    #chart .chart-bar {
+        width: 42px;
+    }
+
+
+    #chart .chart-label {
+        font-size: 11px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    #chart {
+        gap: 8px;
+
+        min-height: 260px;
+
+        padding: 20px 8px 15px;
+    }
+
+
+    #chart .chart-col {
+        min-width: 0;
+
+        height: 220px;
+    }
+
+
+    #chart .chart-stack {
+        height: 130px;
+    }
+
+
+    #chart .chart-bar {
+        width: 32px;
+    }
+
+
+    #chart .chart-label {
+        font-size: 10px;
+
+        line-height: 1.5;
+    }
+
+}
+
+/* =====================================================
+   FINANCIAL OVERVIEW CHART
+===================================================== */
+
+.chart {
+    position: relative;
+
+    width: 100%;
+    height: 330px;
+
+    display: flex;
+    align-items: stretch;
+    justify-content: space-evenly;
+
+    gap: 24px;
+
+    padding: 25px 30px 18px;
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent 19%,
+            var(--border) 20%,
+            transparent 21%,
+
+            transparent 39%,
+            var(--border) 40%,
+            transparent 41%,
+
+            transparent 59%,
+            var(--border) 60%,
+            transparent 61%,
+
+            transparent 79%,
+            var(--border) 80%,
+            transparent 81%
+        );
+}
+
+
+/* =====================================================
+   CHART COLUMN
+===================================================== */
+
+.chart .chart-col {
+
+    flex: 1;
+
+    min-width: 110px;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    position: relative;
+}
+
+
+/* =====================================================
+   BAR AREA
+===================================================== */
+
+.chart .chart-stack {
+
+    width: 100%;
+    max-width: 90px;
+
+    height: 215px;
+
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: center;
+
+    position: relative;
+}
+
+
+/* =====================================================
+   BAR
+===================================================== */
+
+.chart .chart-bar {
+
+    width: 52px;
+
+    min-height: 5px;
+
+    border-radius:
+        9px
+        9px
+        4px
+        4px;
+
+    transition:
+        height 0.35s ease,
+        transform 0.2s ease;
+}
+
+
+.chart .chart-bar:hover {
+
+    transform:
+        scaleX(1.08);
+}
+
+
+/* Revenue */
+
+.chart .chart-bar.revenue {
+
+    background: var(--primary);
+
+    box-shadow:
+        0 8px 25px
+        rgba(91, 76, 255, 0.22);
+}
+
+
+/* Purchases + Expenses */
+
+.chart .chart-bar.expense {
+
+    background: #6366f1;
+
+}
+
+
+/* =====================================================
+   LABEL AREA
+===================================================== */
+
+.chart .chart-label {
+
+    width: 100%;
+
+    min-height: 55px;
+
+    margin-top: 14px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: flex-start;
+
+    text-align: center;
+
+    color: var(--text);
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    line-height: 1.45;
+
+    white-space: nowrap;
+}
+
+
+/*
+ * First line = category name
+ */
+
+.chart .chart-label::first-line {
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================================
+   REMOVE OLD FINANCIAL ACTIVITY OVERLAY
+===================================================== */
+
+.chart::before {
+
+    content: none !important;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE CHART
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .chart {
+
+        height: 310px;
+
+        gap: 12px;
+
+        padding:
+            22px
+            15px
+            15px;
+    }
+
+
+    .chart .chart-col {
+
+        min-width: 80px;
+    }
+
+
+    .chart .chart-stack {
+
+        height: 195px;
+    }
+
+
+    .chart .chart-bar {
+
+        width: 44px;
+    }
+
+
+    .chart .chart-label {
+
+        font-size: 11px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .chart {
+
+        height: 285px;
+
+        gap: 5px;
+
+        padding:
+            18px
+            8px
+            12px;
+    }
+
+
+    .chart .chart-col {
+
+        min-width: 0;
+    }
+
+
+    .chart .chart-stack {
+
+        height: 170px;
+    }
+
+
+    .chart .chart-bar {
+
+        width: 32px;
+    }
+
+
+    .chart .chart-label {
+
+        font-size: 10px;
+
+        white-space: normal;
+    }
+
+}
+
+/* =====================================================
+   MULTIPLE SELECTED DOCUMENTS
+===================================================== */
+
+.selected-files-title {
+    margin-bottom: 12px;
+
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+
+.selected-files-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.selected-file-row {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 11px 13px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+}
+
+
+.selected-file-info {
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.selected-file-icon {
+    flex: 0 0 34px;
+
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 9px;
+
+    background: var(--primary-soft);
+
+    color: var(--primary);
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+
+.selected-file-info strong {
+    display: block;
+
+    max-width: 420px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    color: var(--text);
+
+    font-size: 12px;
+}
+
+
+.selected-file-info span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+
+.remove-file-btn {
+    flex: 0 0 28px;
+
+    width: 28px;
+    height: 28px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    background: var(--surface-2);
+
+    color: var(--muted);
+
+    font-size: 18px;
+}
+
+
+.remove-file-btn:hover {
+    color: var(--red);
+
+    border-color: var(--red);
+}
+
+
+/* =====================================================
+   BATCH PROCESSING RESULTS
+===================================================== */
+
+.upload-results-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.upload-result-item {
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    border: 1px solid var(--border);
+
+    background: var(--surface);
+}
+
+
+.upload-result-item strong {
+    display: block;
+
+    font-size: 11px;
+}
+
+
+.upload-result-item span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+
+.upload-result-item.success {
+    border-color:
+        rgba(22, 166, 115, 0.25);
+
+    background:
+        var(--green-soft);
+}
+
+
+.upload-result-item.failed {
+    border-color:
+        rgba(223, 75, 97, 0.25);
+
+    background:
+        var(--red-soft);
+}
+
+
+@media (max-width: 600px) {
+
+    .selected-file-info strong {
+        max-width: 230px;
+    }
+
+}

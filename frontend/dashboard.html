@@ -4,11 +4,23 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard — InvoiceIQ</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="css/style.css?v=10">
+    <title>
+        Dashboard — InvoiceIQ
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="css/style.css?v=20"
+    >
+
+
     <script src="js/theme.js"></script>
 
 </head>
@@ -16,24 +28,52 @@
 
 <body>
 
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
 <nav class="navbar">
 
-    <a href="index.html" class="brand">
-        <span class="brand-mark">IQ</span>
+
+    <a
+        href="index.html"
+        class="brand"
+    >
+
+        <span class="brand-mark">
+            IQ
+        </span>
+
         InvoiceIQ
+
     </a>
 
+
     <div class="nav-links">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="upload.html">Documents</a>
-        <a href="chat.html">AI Assistant</a>
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="upload.html">
+            Documents
+        </a>
+
+        <a href="chat.html">
+            AI Assistant
+        </a>
+
     </div>
+
 
     <div class="nav-actions">
 
         <button
             class="theme-toggle"
-            data-theme-toggle>
+            data-theme-toggle
+            aria-label="Toggle dark mode"
+        >
             ☾
         </button>
 
@@ -42,286 +82,399 @@
 </nav>
 
 
+<!-- =====================================================
+     APP LAYOUT
+===================================================== -->
+
 <div class="app-layout">
 
 
-<aside class="sidebar">
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
 
-    <div class="sidebar-brand">
-        InvoiceIQ Workspace
-    </div>
-
-
-    <div class="sidebar-section">
-        Workspace
-    </div>
+    <aside class="sidebar">
 
 
-    <a
-        href="dashboard.html"
-        class="sidebar-link active">
-
-        <span class="sidebar-icon">⌂</span>
-        <span>Overview</span>
-
-    </a>
+        <div class="sidebar-brand">
+            InvoiceIQ Workspace
+        </div>
 
 
-    <a
-        href="upload.html"
-        class="sidebar-link">
-
-        <span class="sidebar-icon">↑</span>
-        <span>Documents</span>
-
-    </a>
+        <div class="sidebar-section">
+            Workspace
+        </div>
 
 
-    <a
-        href="chat.html"
-        class="sidebar-link">
+        <a
+            href="dashboard.html"
+            class="sidebar-link active"
+        >
 
-        <span class="sidebar-icon">✦</span>
-        <span>AI Assistant</span>
+            <span class="sidebar-icon">
+                ⌂
+            </span>
 
-    </a>
+            <span>
+                Overview
+            </span>
 
-
-    <div class="sidebar-section">
-        System
-    </div>
-
-
-    <a
-        href="index.html"
-        class="sidebar-link">
-
-        <span class="sidebar-icon">↗</span>
-        <span>Home</span>
-
-    </a>
+        </a>
 
 
-    <div class="sidebar-bottom">
+        <a
+            href="upload.html"
+            class="sidebar-link"
+        >
 
-        <strong>InvoiceIQ AI</strong>
+            <span class="sidebar-icon">
+                ↑
+            </span>
 
-        <p>
-            Intelligent document processing
-            and business analytics.
-        </p>
+            <span>
+                Documents
+            </span>
 
-    </div>
-
-</aside>
-
-
-<main class="app-main">
+        </a>
 
 
-    <div class="app-top">
+        <a
+            href="chat.html"
+            class="sidebar-link"
+        >
 
-        <div>
+            <span class="sidebar-icon">
+                ✦
+            </span>
 
-            <div class="breadcrumb">
-                Workspace / <strong>Overview</strong>
-            </div>
+            <span>
+                AI Assistant
+            </span>
 
-            <h1 class="page-title">
-                Business overview
-            </h1>
+        </a>
 
-            <p class="page-subtitle">
-                Your financial activity at a glance.
+
+        <div class="sidebar-section">
+            System
+        </div>
+
+
+        <a
+            href="index.html"
+            class="sidebar-link"
+        >
+
+            <span class="sidebar-icon">
+                ↗
+            </span>
+
+            <span>
+                Home
+            </span>
+
+        </a>
+
+
+        <div class="sidebar-bottom">
+
+            <strong>
+                InvoiceIQ AI
+            </strong>
+
+
+            <p>
+                Intelligent document processing
+                and business analytics.
             </p>
 
         </div>
 
-
-        <div>
-
-            <a
-                href="upload.html"
-                class="btn btn-primary">
-
-                + Upload document
-
-            </a>
-
-        </div>
-
-    </div>
+    </aside>
 
 
-    <div class="stats-grid">
+    <!-- =================================================
+         MAIN
+    ================================================== -->
+
+    <main class="app-main">
 
 
-        <div class="stat-card">
+        <!-- =================================================
+             HEADER
+        ================================================== -->
 
-            <span class="stat-label">
-                TOTAL REVENUE
-            </span>
-
-            <div
-                id="revenue"
-                class="stat-value">
-                ₹0
-            </div>
-
-            <div class="stat-icon">
-                ↗
-            </div>
-
-            <div class="stat-foot">
-                From sales documents
-            </div>
-
-        </div>
+        <div class="app-top">
 
 
-        <div class="stat-card">
+            <div>
 
-            <span class="stat-label">
-                PURCHASES
-            </span>
+                <div class="breadcrumb">
 
-            <div
-                id="purchases"
-                class="stat-value">
-                ₹0
-            </div>
+                    Workspace /
+                    <strong>
+                        Overview
+                    </strong>
 
-            <div class="stat-icon">
-                ↓
-            </div>
-
-            <div class="stat-foot">
-                Supplier spending
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <span class="stat-label">
-                EXPENSES
-            </span>
-
-            <div
-                id="expenses"
-                class="stat-value">
-                ₹0
-            </div>
-
-            <div class="stat-icon">
-                ◌
-            </div>
-
-            <div class="stat-foot">
-                Business expenses
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <span class="stat-label">
-                EST. PROFIT
-            </span>
-
-            <div
-                id="profit"
-                class="stat-value">
-                ₹0
-            </div>
-
-            <div class="stat-icon">
-                ◆
-            </div>
-
-            <div class="stat-foot">
-                Revenue − purchases − expenses
-            </div>
-
-        </div>
-
-
-    </div>
-
-
-    <div class="dashboard-grid">
-
-
-        <section class="panel">
-
-            <div class="panel-header">
-
-                <h2>
-                    Financial overview
-                </h2>
-
-                <span id="doc-count">
-                    0 documents
-                </span>
-
-            </div>
-
-
-            <div class="panel-body">
-
-                <div id="chart" class="chart">
                 </div>
 
+
+                <h1 class="page-title">
+                    Business overview
+                </h1>
+
+
+                <p class="page-subtitle">
+                    Your financial activity at a glance.
+                </p>
+
             </div>
 
-        </section>
 
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    flex-wrap:wrap;
+                "
+            >
 
-        <section class="panel">
+                <button
+                    id="reset-demo-btn"
+                    class="btn btn-secondary"
+                    type="button"
+                >
+                    Reset demo data
+                </button>
 
-            <div class="panel-header">
-
-                <h2>
-                    Recent documents
-                </h2>
 
                 <a
                     href="upload.html"
-                    class="badge">
-                    Upload
+                    class="btn btn-primary"
+                >
+                    + Upload document
                 </a>
 
             </div>
 
+        </div>
 
-            <div class="panel-body">
+
+        <!-- =================================================
+             STAT CARDS
+        ================================================== -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    TOTAL REVENUE
+                </span>
+
 
                 <div
-                    id="documents"
-                    class="document-list">
+                    id="revenue"
+                    class="stat-value"
+                >
+                    ₹0
+                </div>
 
-                    <div class="empty">
-                        Loading...
-                    </div>
 
+                <div class="stat-icon">
+                    ↗
+                </div>
+
+
+                <div class="stat-foot">
+                    From sales documents
                 </div>
 
             </div>
 
-        </section>
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    PURCHASES
+                </span>
 
 
-    </div>
+                <div
+                    id="purchases"
+                    class="stat-value"
+                >
+                    ₹0
+                </div>
 
 
-</main>
+                <div class="stat-icon">
+                    ↓
+                </div>
+
+
+                <div class="stat-foot">
+                    Supplier spending
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    EXPENSES
+                </span>
+
+
+                <div
+                    id="expenses"
+                    class="stat-value"
+                >
+                    ₹0
+                </div>
+
+
+                <div class="stat-icon">
+                    ◌
+                </div>
+
+
+                <div class="stat-foot">
+                    Business expenses
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    EST. PROFIT
+                </span>
+
+
+                <div
+                    id="profit"
+                    class="stat-value"
+                >
+                    ₹0
+                </div>
+
+
+                <div class="stat-icon">
+                    ◆
+                </div>
+
+
+                <div class="stat-foot">
+                    Revenue − purchases − expenses
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             DASHBOARD GRID
+        ================================================== -->
+
+        <div class="dashboard-grid">
+
+
+            <!-- =================================================
+                 FINANCIAL OVERVIEW
+            ================================================== -->
+
+            <section class="panel">
+
+
+                <div class="panel-header">
+
+                    <h2>
+                        Financial overview
+                    </h2>
+
+
+                    <span id="doc-count">
+                        0 documents
+                    </span>
+
+                </div>
+
+
+                <div class="panel-body">
+
+                    <div
+                        id="chart"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RECENT DOCUMENTS
+            ================================================== -->
+
+            <section class="panel">
+
+
+                <div class="panel-header">
+
+                    <h2>
+                        Recent documents
+                    </h2>
+
+
+                    <a
+                        href="upload.html"
+                        class="badge"
+                    >
+                        Upload
+                    </a>
+
+                </div>
+
+
+                <div class="panel-body">
+
+
+                    <div
+                        id="documents"
+                        class="document-list"
+                    >
+
+                        <div class="empty">
+                            Loading...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+    </main>
 
 </div>
 
 
-<script src="js/dashboard.js"></script>
+<!-- =====================================================
+     DASHBOARD JS
+===================================================== -->
+
+<script src="js/dashboard.js?v=26"></script>
+
 
 </body>
 

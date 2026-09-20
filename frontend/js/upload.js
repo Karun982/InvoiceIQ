@@ -1,442 +1,639 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
     const API_URL = "http://127.0.0.1:8000";
 
     const input = document.getElementById("file-input");
-    const dropzone = document.getElementById("dropzone");
     const chooseBtn = document.getElementById("choose-btn");
     const uploadBtn = document.getElementById("upload-btn");
-    const nameBox = document.getElementById("file-name");
+
+    const fileNameBox = document.getElementById("file-name");
+    const filesList = document.getElementById("selected-files-list");
     const result = document.getElementById("result");
+    const dropzone = document.getElementById("dropzone");
 
-    let selectedFile = null;
+
+    console.log("InvoiceIQ upload.js loaded");
 
 
-    /* =====================================================
-       SAFETY CHECK
-    ===================================================== */
-
-    if (
-        !input ||
-        !dropzone ||
-        !chooseBtn ||
-        !uploadBtn ||
-        !nameBox ||
-        !result
-    ) {
+    if (!input || !chooseBtn || !uploadBtn || !fileNameBox || !filesList || !result) {
         console.error("InvoiceIQ upload elements are missing.");
         return;
     }
 
 
-    /* =====================================================
-       CHOOSE FILE
-    ===================================================== */
+    // =====================================================
+    // SELECTED FILES
+    // =====================================================
 
-    chooseBtn.addEventListener("click", (event) => {
+    let selectedFiles = [];
+
+
+    // =====================================================
+    // CHOOSE DOCUMENTS
+    // =====================================================
+
+    chooseBtn.addEventListener("click", function (event) {
 
         event.preventDefault();
 
-        input.value = "";
+        /*
+         * Do NOT clear input.value here.
+         * We want multiple selections across multiple
+         * Choose Documents clicks.
+         */
 
         input.click();
 
     });
 
 
-    /* =====================================================
-       FILE SELECTED
-    ===================================================== */
+    // =====================================================
+    // FILE SELECTION
+    // =====================================================
 
-    input.addEventListener("change", () => {
+    input.addEventListener("change", function () {
 
-        const file = input.files && input.files[0];
+        const newlySelectedFiles =
+            Array.from(input.files || []);
 
-        if (file) {
-            selectFile(file);
+
+        console.log(
+            "New files selected:",
+            newlySelectedFiles.length
+        );
+
+
+        if (!newlySelectedFiles.length) {
+            return;
         }
 
-    });
+
+        /*
+         * ADD new files to existing list.
+         * Don't replace the old files.
+         */
+
+        newlySelectedFiles.forEach(function (file) {
+
+            const alreadyExists =
+                selectedFiles.some(function (existingFile) {
+
+                    return (
+                        existingFile.name === file.name &&
+                        existingFile.size === file.size &&
+                        existingFile.lastModified === file.lastModified
+                    );
+
+                });
 
 
-    /* =====================================================
-       DRAG & DROP
-    ===================================================== */
-
-    ["dragenter", "dragover"].forEach(eventName => {
-
-        dropzone.addEventListener(eventName, (event) => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            dropzone.classList.add("dragover");
+            if (!alreadyExists) {
+                selectedFiles.push(file);
+            }
 
         });
 
+
+        console.log(
+            "Total selected files:",
+            selectedFiles.length
+        );
+
+
+        renderSelectedFiles();
+
     });
 
 
-    ["dragleave", "drop"].forEach(eventName => {
+    // =====================================================
+    // DRAG & DROP
+    // =====================================================
 
-        dropzone.addEventListener(eventName, (event) => {
+    if (dropzone) {
 
-            event.preventDefault();
-            event.stopPropagation();
+        ["dragenter", "dragover"].forEach(function (eventName) {
 
-            dropzone.classList.remove("dragover");
+            dropzone.addEventListener(
+                eventName,
+                function (event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    dropzone.classList.add("dragover");
+
+                }
+            );
 
         });
 
-    });
 
+        ["dragleave", "drop"].forEach(function (eventName) {
 
-    dropzone.addEventListener("drop", (event) => {
+            dropzone.addEventListener(
+                eventName,
+                function (event) {
 
-        const files = event.dataTransfer.files;
+                    event.preventDefault();
+                    event.stopPropagation();
 
-        if (!files || files.length === 0) {
-            return;
-        }
+                    dropzone.classList.remove("dragover");
 
-        selectFile(files[0]);
-
-    });
-
-
-    /* =====================================================
-       SELECT FILE
-    ===================================================== */
-
-    function selectFile(file) {
-
-        if (!file) {
-            return;
-        }
-
-
-        const allowedTypes = [
-            "application/pdf",
-            "image/jpeg",
-            "image/jpg",
-            "image/png"
-        ];
-
-
-        const allowedExtensions = [
-            ".pdf",
-            ".jpg",
-            ".jpeg",
-            ".png"
-        ];
-
-
-        const fileName = file.name.toLowerCase();
-
-        const validType =
-            allowedTypes.includes(file.type) ||
-            allowedExtensions.some(ext =>
-                fileName.endsWith(ext)
+                }
             );
 
+        });
 
-        if (!validType) {
 
-            showError(
-                "Please select a PDF, JPG, JPEG or PNG file."
-            );
+        dropzone.addEventListener(
+            "drop",
+            function (event) {
+
+                const droppedFiles =
+                    Array.from(
+                        event.dataTransfer.files || []
+                    );
+
+
+                if (!droppedFiles.length) {
+                    return;
+                }
+
+
+                droppedFiles.forEach(function (file) {
+
+                    const alreadyExists =
+                        selectedFiles.some(function (existingFile) {
+
+                            return (
+                                existingFile.name === file.name &&
+                                existingFile.size === file.size &&
+                                existingFile.lastModified === file.lastModified
+                            );
+
+                        });
+
+
+                    if (!alreadyExists) {
+                        selectedFiles.push(file);
+                    }
+
+                });
+
+
+                renderSelectedFiles();
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // RENDER FILE LIST
+    // =====================================================
+
+    function renderSelectedFiles() {
+
+        if (!selectedFiles.length) {
+
+            fileNameBox.style.display = "none";
+
+            filesList.innerHTML = "";
+
+            uploadBtn.style.display = "none";
 
             return;
         }
 
 
-        selectedFile = file;
-
-
-        nameBox.textContent =
-            `Selected: ${file.name}`;
-
-
-        nameBox.style.display = "block";
-
+        fileNameBox.style.display = "block";
 
         uploadBtn.style.display = "inline-flex";
 
         uploadBtn.disabled = false;
 
-        uploadBtn.textContent =
-            "Process document →";
-
-
-        result.style.display = "none";
-
-        result.innerHTML = "";
-
-
-        dropzone.classList.add("file-selected");
-
-    }
-
-
-    /* =====================================================
-       UPLOAD
-    ===================================================== */
-
-    uploadBtn.addEventListener("click", async (event) => {
-
-        event.preventDefault();
-
-
-        if (!selectedFile) {
-
-            showError(
-                "Please choose a document first."
-            );
-
-            return;
-        }
-
-
-        uploadBtn.disabled = true;
 
         uploadBtn.textContent =
-            "Processing...";
+            `Process ${selectedFiles.length} document${
+                selectedFiles.length === 1 ? "" : "s"
+            } →`;
 
 
-        result.style.display = "block";
-
-        result.innerHTML = `
-            <div>
-                <strong>Processing document...</strong>
-                <p style="margin-top:6px;">
-                    InvoiceIQ is extracting and analyzing your document.
-                </p>
-            </div>
-        `;
+        filesList.innerHTML = "";
 
 
-        try {
+        selectedFiles.forEach(function (file, index) {
 
-            const formData = new FormData();
-
-            formData.append(
-                "file",
-                selectedFile
-            );
+            const row =
+                document.createElement("div");
 
 
-            const response = await fetch(
-                `${API_URL}/api/documents/upload`,
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
+            row.className =
+                "selected-file-row";
 
 
-            let data;
+            row.innerHTML = `
 
-            try {
+                <div class="selected-file-info">
 
-                data = await response.json();
-
-            } catch {
-
-                throw new Error(
-                    "The server returned an invalid response."
-                );
-
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.detail ||
-                    data.message ||
-                    "Document upload failed."
-                );
-
-            }
-
-
-            const document =
-                data.document || data;
-
-
-            showSuccess(document);
-
-
-        } catch (error) {
-
-            console.error(
-                "InvoiceIQ upload error:",
-                error
-            );
-
-
-            showError(
-                error.message ||
-                "Unable to process the document."
-            );
-
-
-        } finally {
-
-            uploadBtn.disabled = false;
-
-            uploadBtn.textContent =
-                "Process document →";
-
-        }
-
-    });
-
-
-    /* =====================================================
-       SUCCESS
-    ===================================================== */
-
-    function showSuccess(document) {
-
-        const total =
-            Number(
-                document.total_amount || 0
-            );
-
-
-        result.style.display = "block";
-
-
-        result.innerHTML = `
-
-            <div>
-
-                <h3 style="
-                    margin-bottom:18px;
-                    font-family:'Space Grotesk',sans-serif;
-                ">
-                    ✓ Document processed
-                </h3>
-
-
-                <div style="
-                    display:grid;
-                    grid-template-columns:
-                    repeat(2,minmax(0,1fr));
-                    gap:12px;
-                ">
-
-
-                    <div style="
-                        padding:14px;
-                        border:1px solid var(--border);
-                        border-radius:12px;
-                        background:var(--surface);
-                    ">
-
-                        <small style="
-                            display:block;
-                            color:var(--muted);
-                            font-size:10px;
-                            margin-bottom:5px;
-                        ">
-                            DOCUMENT TYPE
-                        </small>
-
-                        <strong>
-                            ${escapeHtml(
-                                document.document_type || "—"
-                            )}
-                        </strong>
-
+                    <div class="selected-file-icon">
+                        ${getFileExtension(file.name)}
                     </div>
 
 
-                    <div style="
-                        padding:14px;
-                        border:1px solid var(--border);
-                        border-radius:12px;
-                        background:var(--surface);
-                    ">
-
-                        <small style="
-                            display:block;
-                            color:var(--muted);
-                            font-size:10px;
-                            margin-bottom:5px;
-                        ">
-                            TRANSACTION ID
-                        </small>
+                    <div>
 
                         <strong>
-                            ${escapeHtml(
-                                document.transaction_id || "—"
-                            )}
+                            ${escapeHtml(file.name)}
                         </strong>
 
-                    </div>
-
-
-                    <div style="
-                        padding:14px;
-                        border:1px solid var(--border);
-                        border-radius:12px;
-                        background:var(--surface);
-                    ">
-
-                        <small style="
-                            display:block;
-                            color:var(--muted);
-                            font-size:10px;
-                            margin-bottom:5px;
-                        ">
-                            PARTY
-                        </small>
-
-                        <strong>
-                            ${escapeHtml(
-                                document.party_name || "—"
-                            )}
-                        </strong>
+                        <span>
+                            ${formatFileSize(file.size)}
+                        </span>
 
                     </div>
-
-
-                    <div style="
-                        padding:14px;
-                        border:1px solid var(--border);
-                        border-radius:12px;
-                        background:var(--surface);
-                    ">
-
-                        <small style="
-                            display:block;
-                            color:var(--muted);
-                            font-size:10px;
-                            margin-bottom:5px;
-                        ">
-                            TOTAL
-                        </small>
-
-                        <strong>
-                            ₹${total.toLocaleString("en-IN")}
-                        </strong>
-
-                    </div>
-
 
                 </div>
 
+
+                <button
+                    type="button"
+                    class="remove-file-btn"
+                    data-index="${index}"
+                    title="Remove document"
+                >
+                    ×
+                </button>
+
+            `;
+
+
+            filesList.appendChild(row);
+
+        });
+
+
+        // =================================================
+        // REMOVE INDIVIDUAL FILE
+        // =================================================
+
+        filesList
+            .querySelectorAll(".remove-file-btn")
+            .forEach(function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const index =
+                            Number(button.dataset.index);
+
+
+                        selectedFiles.splice(
+                            index,
+                            1
+                        );
+
+
+                        renderSelectedFiles();
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    // =====================================================
+    // PROCESS ALL DOCUMENTS
+    // =====================================================
+
+    uploadBtn.addEventListener(
+        "click",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            if (!selectedFiles.length) {
+
+                showError(
+                    "Please select at least one document."
+                );
+
+                return;
+            }
+
+
+            uploadBtn.disabled = true;
+
+            chooseBtn.disabled = true;
+
+
+            result.style.display = "block";
+
+
+            const totalFiles =
+                selectedFiles.length;
+
+
+            const results = [];
+
+
+            // =================================================
+            // PROCESS ONE BY ONE
+            // =================================================
+
+            for (
+                let i = 0;
+                i < totalFiles;
+                i++
+            ) {
+
+                const file =
+                    selectedFiles[i];
+
+
+                result.innerHTML = `
+
+                    <div>
+
+                        <strong>
+                            Processing document
+                            ${i + 1}
+                            of
+                            ${totalFiles}
+                        </strong>
+
+                        <p style="margin-top:6px;">
+                            ${escapeHtml(file.name)}
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                try {
+
+                    const formData =
+                        new FormData();
+
+
+                    formData.append(
+                        "file",
+                        file
+                    );
+
+
+                    const response =
+                        await fetch(
+                            `${API_URL}/api/documents/upload`,
+                            {
+                                method: "POST",
+                                body: formData
+                            }
+                        );
+
+
+                    let data;
+
+
+                    try {
+
+                        data =
+                            await response.json();
+
+                    } catch {
+
+                        throw new Error(
+                            "Server returned an invalid response."
+                        );
+
+                    }
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            "Document processing failed."
+                        );
+
+                    }
+
+
+                    results.push({
+
+                        success: true,
+
+                        file: file.name,
+
+                        document:
+                            data.document || data
+
+                    });
+
+
+                } catch (error) {
+
+                    console.error(
+                        "InvoiceIQ processing error:",
+                        file.name,
+                        error
+                    );
+
+
+                    results.push({
+
+                        success: false,
+
+                        file: file.name,
+
+                        error:
+                            error.message ||
+                            "Processing failed."
+
+                    });
+
+                }
+
+            }
+
+
+            showResults(results);
+
+
+            uploadBtn.disabled = false;
+
+            chooseBtn.disabled = false;
+
+        }
+    );
+
+
+    // =====================================================
+    // SHOW RESULTS
+    // =====================================================
+
+    function showResults(results) {
+
+        const successful =
+            results.filter(
+                item => item.success
+            );
+
+
+        const failed =
+            results.filter(
+                item => !item.success
+            );
+
+
+        result.style.display = "block";
+
+
+        result.innerHTML = `
+
+            <div>
+
+                <h3
+                    style="
+                        margin-bottom:16px;
+                        font-family:'Space Grotesk',sans-serif;
+                    "
+                >
+                    ${
+                        failed.length === 0
+                            ? "✓ All documents processed"
+                            : "Processing completed"
+                    }
+                </h3>
+
+
+                <div class="upload-results-list">
+
+                    ${
+                        results.map(function (item) {
+
+                            if (item.success) {
+
+                                const doc =
+                                    item.document;
+
+
+                                return `
+
+                                    <div
+                                        class="
+                                            upload-result-item
+                                            success
+                                        "
+                                    >
+
+                                        <strong>
+                                            ✓
+                                            ${escapeHtml(
+                                                item.file
+                                            )}
+                                        </strong>
+
+
+                                        <span>
+                                            ${escapeHtml(
+                                                doc.document_type ||
+                                                "OTHER"
+                                            )}
+
+                                            ·
+
+                                            ${money(
+                                                doc.total_amount
+                                            )}
+                                        </span>
+
+                                    </div>
+
+                                `;
+
+                            }
+
+
+                            return `
+
+                                <div
+                                    class="
+                                        upload-result-item
+                                        failed
+                                    "
+                                >
+
+                                    <strong>
+                                        ✕
+                                        ${escapeHtml(
+                                            item.file
+                                        )}
+                                    </strong>
+
+
+                                    <span>
+                                        ${escapeHtml(
+                                            item.error
+                                        )}
+                                    </span>
+
+                                </div>
+
+                            `;
+
+                        }).join("")
+                    }
+
+                </div>
+
+
+                <p
+                    style="
+                        margin-top:14px;
+                        color:var(--muted);
+                        font-size:11px;
+                    "
+                >
+
+                    ${successful.length}
+                    of
+                    ${results.length}
+                    documents processed successfully.
+
+                </p>
+
+
+                ${
+                    successful.length > 0
+                        ? `
+                            <a
+                                href="dashboard.html"
+                                class="btn btn-primary"
+                                style="margin-top:12px;"
+                            >
+                                View dashboard →
+                            </a>
+                        `
+                        : ""
+                }
+
             </div>
+
         `;
 
     }
 
 
-    /* =====================================================
-       ERROR
-    ===================================================== */
+    // =====================================================
+    // ERROR
+    // =====================================================
 
     function showError(message) {
 
@@ -447,16 +644,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div>
 
-                <strong style="
-                    color:var(--red);
-                ">
-                    Upload failed
+                <strong
+                    style="color:var(--red);"
+                >
+                    Upload error
                 </strong>
 
-                <p style="
-                    margin-top:7px;
-                    color:var(--muted);
-                ">
+
+                <p
+                    style="
+                        margin-top:7px;
+                        color:var(--muted);
+                    "
+                >
                     ${escapeHtml(message)}
                 </p>
 
@@ -467,13 +667,81 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       HTML ESCAPE
-    ===================================================== */
+    // =====================================================
+    // FILE EXTENSION
+    // =====================================================
+
+    function getFileExtension(name) {
+
+        const extension =
+            name
+                .split(".")
+                .pop()
+                .toUpperCase();
+
+
+        if (extension === "JPEG") {
+            return "JPG";
+        }
+
+
+        return extension;
+
+    }
+
+
+    // =====================================================
+    // FILE SIZE
+    // =====================================================
+
+    function formatFileSize(bytes) {
+
+        if (!bytes) {
+            return "0 KB";
+        }
+
+
+        const kb =
+            bytes / 1024;
+
+
+        if (kb < 1024) {
+            return `${kb.toFixed(1)} KB`;
+        }
+
+
+        return `${(
+            kb / 1024
+        ).toFixed(1)} MB`;
+
+    }
+
+
+    // =====================================================
+    // MONEY
+    // =====================================================
+
+    function money(value) {
+
+        return `₹${Number(
+            value || 0
+        ).toLocaleString(
+            "en-IN",
+            {
+                maximumFractionDigits: 2
+            }
+        )}`;
+
+    }
+
+
+    // =====================================================
+    // ESCAPE HTML
+    // =====================================================
 
     function escapeHtml(value) {
 
-        return String(value)
+        return String(value ?? "")
             .replaceAll("&", "&amp;")
             .replaceAll("<", "&lt;")
             .replaceAll(">", "&gt;")
@@ -481,6 +749,5 @@ document.addEventListener("DOMContentLoaded", () => {
             .replaceAll("'", "&#039;");
 
     }
-
 
 });
