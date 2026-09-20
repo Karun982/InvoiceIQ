@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Upload — InvoiceIQ</title>
+    <title>AI Chat — InvoiceIQ</title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -13,6 +13,7 @@
 
 <body>
 
+    <!-- Navigation -->
     <nav class="navbar">
 
         <div class="brand">
@@ -23,177 +24,120 @@
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="dashboard.html">Dashboard</a>
-            <a class="active" href="upload.html">Upload</a>
-            <a href="chat.html">AI Chat</a>
+            <a href="upload.html">Upload</a>
+            <a class="active" href="chat.html">AI Chat</a>
         </div>
 
     </nav>
 
 
-    <main class="upload-page">
+    <!-- Chat Page -->
+    <main class="chat-page">
 
         <div class="page-header centered">
 
-            <span class="badge">DOCUMENT PROCESSING</span>
+            <span class="badge">AI BUSINESS ASSISTANT</span>
 
-            <h1>Upload a document</h1>
+            <h1>Ask InvoiceIQ</h1>
 
             <p>
-                Upload an invoice, purchase document,
-                expense receipt or sales document.
+                Ask questions about your revenue, purchases,
+                expenses and estimated profit.
             </p>
 
         </div>
 
 
-        <section class="upload-container">
+        <!-- Chat Container -->
+        <section class="chat-container">
 
+            <!-- Messages -->
             <div
-                class="drop-zone"
-                id="drop-zone"
+                class="messages"
+                id="messages"
             >
 
-                <div class="upload-icon">
-                    ↑
+                <!-- Initial AI message -->
+                <div class="message ai">
+
+                    <div class="message-avatar">
+                        IQ
+                    </div>
+
+                    <div class="message-content">
+
+                        <span class="message-label">
+                            InvoiceIQ AI
+                        </span>
+
+                        <p>
+                            Hello! I can analyze your business
+                            data and answer questions about
+                            revenue, purchases, expenses and
+                            estimated profit.
+                        </p>
+
+                    </div>
+
                 </div>
-
-                <h2>Drop your document here</h2>
-
-                <p>
-                    or choose a file from your computer
-                </p>
-
-                <label class="btn btn-primary choose-btn">
-
-                    Choose File
-
-                    <input
-                        type="file"
-                        id="file-input"
-                        accept=".pdf,.png,.jpg,.jpeg"
-                        hidden
-                    >
-
-                </label>
-
-                <span class="file-info">
-                    PDF, PNG, JPG or JPEG
-                </span>
 
             </div>
 
 
-            <div
-                class="selected-file"
-                id="selected-file"
-                style="display:none;"
-            >
+            <!-- Suggested Questions -->
+            <div class="suggestions">
 
-                <div>
-                    <strong id="file-name">
-                        document.pdf
-                    </strong>
+                <button type="button">
+                    What is my total revenue?
+                </button>
 
-                    <span id="file-size">
-                        0 KB
-                    </span>
-                </div>
+                <button type="button">
+                    How much did we spend on purchases?
+                </button>
 
-                <button
-                    class="remove-file"
-                    id="remove-file"
-                >
-                    ×
+                <button type="button">
+                    What are our total expenses?
+                </button>
+
+                <button type="button">
+                    What is our estimated profit?
+                </button>
+
+                <button type="button">
+                    Give me a business summary.
                 </button>
 
             </div>
 
 
-            <button
-                class="btn btn-primary process-btn"
-                id="process-btn"
-                disabled
-            >
-                Process Document
-            </button>
-
-
-            <div
-                class="processing"
-                id="processing"
-                style="display:none;"
+            <!-- Chat Input -->
+            <form
+                id="chat-form"
+                class="chat-form"
             >
 
-                <div class="loader"></div>
+                <input
+                    type="text"
+                    id="chat-input"
+                    placeholder="Ask a business question..."
+                    autocomplete="off"
+                >
 
-                <h3>Processing your document</h3>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Send
+                </button>
 
-                <p>
-                    Azure AI is extracting and analyzing
-                    your document...
-                </p>
-
-            </div>
-
-
-            <div
-                class="upload-result"
-                id="upload-result"
-                style="display:none;"
-            ></div>
-
-        </section>
-
-
-        <section class="process-info">
-
-            <h2>What happens after upload?</h2>
-
-            <div class="process-steps">
-
-                <div>
-                    <span>01</span>
-                    <h3>Extract</h3>
-                    <p>
-                        Azure Document Intelligence extracts
-                        invoice fields.
-                    </p>
-                </div>
-
-                <div>
-                    <span>02</span>
-                    <h3>Classify</h3>
-                    <p>
-                        GPT-5-mini determines the document
-                        category.
-                    </p>
-                </div>
-
-                <div>
-                    <span>03</span>
-                    <h3>Store</h3>
-                    <p>
-                        Structured data is saved in InvoiceIQ.
-                    </p>
-                </div>
-
-                <div>
-                    <span>04</span>
-                    <h3>Analyze</h3>
-                    <p>
-                        Business analytics are automatically
-                        updated.
-                    </p>
-                </div>
-
-            </div>
+            </form>
 
         </section>
 
     </main>
 
 
-    <script src="js/upload.js"></script>
+    <script src="js/chat.js"></script>
 
 </body>
 </html>

@@ -3,7 +3,7 @@ import json
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 
-from src.database import documents
+from src.database import get_all_documents
 from src.analytics import (
     calculate_revenue,
     calculate_purchases,
@@ -26,22 +26,34 @@ project = AIProjectClient(
 
 
 # -----------------------------
+# Get current business data
+# -----------------------------
+
+def get_documents():
+    return get_all_documents()
+
+
+# -----------------------------
 # Business functions
 # -----------------------------
 
 def get_revenue():
+    documents = get_documents()
     return calculate_revenue(documents)
 
 
 def get_purchases():
+    documents = get_documents()
     return calculate_purchases(documents)
 
 
 def get_expenses():
+    documents = get_documents()
     return calculate_expenses(documents)
 
 
 def get_estimated_profit():
+    documents = get_documents()
     return calculate_estimated_profit(documents)
 
 
@@ -123,6 +135,7 @@ tools = [
 # -----------------------------
 
 def execute_tool(name):
+
     if name == "get_revenue":
         return get_revenue()
 
@@ -145,7 +158,7 @@ def execute_tool(name):
 # Ask BuisnessAgent
 # -----------------------------
 
-def ask_agent(question):
+def ask_business_agent(question):
 
     with project.get_openai_client() as openai_client:
 

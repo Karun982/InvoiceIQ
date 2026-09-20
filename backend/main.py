@@ -4,15 +4,19 @@ import tempfile
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
+from src.agent import ask_business_agent
 from src.invoice_processor import extract_invoice
 from src.classifier import classify_document
+
 from src.database import (
     init_db,
     save_document,
     get_all_documents,
     get_document_by_id,
 )
+
 from src.analytics import (
     calculate_revenue,
     calculate_purchases,
@@ -62,6 +66,10 @@ def health():
     }
 
 
+# =========================
+# DOCUMENT UPLOAD
+# =========================
+
 @app.post("/api/documents/upload")
 async def upload_document(file: UploadFile = File(...)):
 
@@ -83,6 +91,7 @@ async def upload_document(file: UploadFile = File(...)):
     temp_path = None
 
     try:
+
         # Temporary file create karo
         with tempfile.NamedTemporaryFile(
             delete=False,
@@ -102,27 +111,28 @@ async def upload_document(file: UploadFile = File(...)):
         saved_document, is_new = save_document(document)
 
         return {
-    "success": True,
-    "message": (
-        "Document processed and saved successfully."
-        if is_new
-        else "Document already exists in the database."
-    ),
-    "duplicate": not is_new,
-    "document": {
-        "id": saved_document.id,
-        "transaction_id": saved_document.transaction_id,
-        "document_type": saved_document.document_type,
-        "party_name": saved_document.party_name,
-        "transaction_date": saved_document.transaction_date,
-        "due_date": saved_document.due_date,
-        "subtotal": saved_document.subtotal,
-        "tax": saved_document.tax,
-        "total_amount": saved_document.total_amount,
-        "currency": saved_document.currency,
-        "payment_status": saved_document.payment_status,
-    },
-}
+            "success": True,
+            "message": (
+                "Document processed and saved successfully."
+                if is_new
+                else "Document already exists in the database."
+            ),
+            "duplicate": not is_new,
+            "document": {
+                "id": saved_document.id,
+                "transaction_id": saved_document.transaction_id,
+                "document_type": saved_document.document_type,
+                "party_name": saved_document.party_name,
+                "transaction_date": saved_document.transaction_date,
+                "due_date": saved_document.due_date,
+                "subtotal": saved_document.subtotal,
+                "tax": saved_document.tax,
+                "total_amount": saved_document.total_amount,
+                "currency": saved_document.currency,
+                "payment_status": saved_document.payment_status,
+            },
+        }
+
     except Exception as e:
 
         raise HTTPException(
@@ -135,6 +145,10 @@ async def upload_document(file: UploadFile = File(...)):
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
 
+
+# =========================
+# GET ALL DOCUMENTS
+# =========================
 
 @app.get("/api/documents")
 def get_documents():
@@ -161,21 +175,49 @@ def get_documents():
         ],
     }
 
+
+# =========================
+# ANALYTICS
+# =========================
+
 @app.get("/api/analytics/summary")
 def analytics_summary():
 
     documents = get_all_documents()
 
-    revenue = calculate_revenue(documents)
-    purchases = calculate_purchases(documents)
-    expenses = calculate_expenses(documents)
-    estimated_profit = calculate_estimated_profit(documents)
-
     return {
         "success": True,
-        "revenue": revenue,
-        "purchases": purchases,
-        "expenses": expenses,
-        "estimated_profit": estimated_profit,
+        "revenue": calculate_revenue(documents),
+        "purchases": calculate_purchases(documents),
+        "expenses": calculate_expenses(documents),
+        "estimated_profit": calculate_estimated_profit(documents),
         "document_count": len(documents),
     }
+
+
+# =========================
+# AI BUSINESS CHAT
+# =========================
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+@app.post("/api/chat")
+def chat(request: ChatRequest):
+
+    try:
+
+        answer = ask_business_agent(request.message)
+
+        return {
+            "success": True,
+            "answer": answer,
+        }
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Chat processing failed: {str(e)}",
+        )

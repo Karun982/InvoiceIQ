@@ -160,3 +160,28 @@ def save_document(document):
     finally:
 
         db.close()
+
+def get_all_documents():
+    db = SessionLocal()
+
+    try:
+        return (
+            db.query(DocumentDB)
+            .order_by(DocumentDB.id.desc())
+            .all()
+        )
+    finally:
+        db.close()
+
+
+def get_document_by_id(document_id):
+    db = SessionLocal()
+
+    try:
+        return (
+            db.query(DocumentDB)
+            .filter(DocumentDB.id == document_id)
+            .first()
+        )
+    finally:
+        db.close()

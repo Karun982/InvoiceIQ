@@ -27,7 +27,6 @@ def calculate_expenses(documents):
 
 
 def calculate_estimated_profit(documents):
-
     revenue = calculate_revenue(documents)
     purchases = calculate_purchases(documents)
     expenses = calculate_expenses(documents)

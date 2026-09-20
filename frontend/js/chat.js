@@ -25,30 +25,30 @@ function addMessage(text, type) {
                     InvoiceIQ AI
                 </span>
 
-                <p>
-                    ${text}
-                </p>
+                <p></p>
 
             </div>
         `;
+
+        // AI response ko safely insert karo
+        message.querySelector("p").textContent = text;
 
     } else {
 
         message.innerHTML = `
             <div class="message-content">
-                <p>
-                    ${text}
-                </p>
+                <p></p>
             </div>
         `;
 
+        // User input ko safely insert karo
+        message.querySelector("p").textContent = text;
     }
 
 
     messages.appendChild(message);
 
     messages.scrollTop = messages.scrollHeight;
-
 }
 
 
@@ -85,8 +85,9 @@ async function sendMessage(question) {
         }
 
 
+        // Backend /api/chat returns "answer"
         addMessage(
-            data.response || data.message,
+            data.answer,
             "ai"
         );
 
