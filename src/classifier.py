@@ -254,7 +254,21 @@ DOCUMENT DATA:
 {json.dumps(document_data, indent=2)}
 """
 
+    # -----------------------------------------------------
+    # GPT CLASSIFICATION
+    # -----------------------------------------------------
+
+    print(
+        "Starting GPT classification...",
+        flush=True
+    )
+
     with project.get_openai_client() as openai_client:
+
+        print(
+            "Calling GPT-5-mini...",
+            flush=True
+        )
 
         response = openai_client.responses.create(
             model="gpt-5-mini",
@@ -267,6 +281,15 @@ DOCUMENT DATA:
             input=prompt,
         )
 
+        print(
+            "GPT classification response received.",
+            flush=True
+        )
+
+    # -----------------------------------------------------
+    # PARSE RESPONSE
+    # -----------------------------------------------------
+
     try:
 
         result = json.loads(
@@ -275,8 +298,17 @@ DOCUMENT DATA:
 
     except json.JSONDecodeError:
 
+        print(
+            "GPT returned invalid JSON. "
+            "Using OTHER.",
+            flush=True
+        )
+
         return "OTHER"
 
+    # -----------------------------------------------------
+    # VALIDATE DOCUMENT TYPE
+    # -----------------------------------------------------
 
     document_type = (
         str(
@@ -289,7 +321,6 @@ DOCUMENT DATA:
         .upper()
     )
 
-
     allowed_types = {
         "SALES",
         "PURCHASE",
@@ -297,10 +328,13 @@ DOCUMENT DATA:
         "OTHER",
     }
 
-
     if document_type not in allowed_types:
 
         return "OTHER"
 
+    print(
+        f"Classification result: {document_type}",
+        flush=True
+    )
 
     return document_type

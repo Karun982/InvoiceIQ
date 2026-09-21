@@ -9,19 +9,15 @@ from fastapi import (
     HTTPException,
 )
 
-# from fastapi import FastAPI, HTTPException
-
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
-
 
 from src.agent import ask_business_agent
 
 from src.invoice_processor import extract_invoice
 
 from src.classifier import classify_document
-
 
 from src.database import (
     init_db,
@@ -30,7 +26,6 @@ from src.database import (
     get_document_by_id,
     reset_database,
 )
-
 
 from src.analytics import (
     calculate_revenue,
@@ -45,26 +40,12 @@ from src.analytics import (
 # =========================================================
 
 app = FastAPI(
-
     title="InvoiceIQ API",
-
     description=(
         "AI-powered invoice processing "
         "and business analytics API"
     ),
-
     version="1.0.0",
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 
@@ -73,18 +54,13 @@ app.add_middleware(
 # =========================================================
 
 app.add_middleware(
-
     CORSMiddleware,
-
     allow_origins=[
         "http://127.0.0.1:5500",
         "http://localhost:5500",
     ],
-
     allow_credentials=True,
-
     allow_methods=["*"],
-
     allow_headers=["*"],
 )
 
@@ -95,7 +71,6 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup():
-
     init_db()
 
 
@@ -105,15 +80,9 @@ def startup():
 
 @app.get("/")
 def root():
-
     return {
-
-        "message":
-            "InvoiceIQ API is running",
-
-        "status":
-            "online",
-
+        "message": "InvoiceIQ API is running",
+        "status": "online",
     }
 
 
@@ -123,15 +92,9 @@ def root():
 
 @app.get("/api/health")
 def health():
-
     return {
-
-        "status":
-            "healthy",
-
-        "service":
-            "InvoiceIQ",
-
+        "status": "healthy",
+        "service": "InvoiceIQ",
     }
 
 
@@ -145,36 +108,26 @@ async def upload_document(
 ):
 
     allowed_extensions = {
-
         ".pdf",
         ".png",
         ".jpg",
         ".jpeg",
-
     }
-
 
     extension = os.path.splitext(
         file.filename
     )[1].lower()
 
-
     if extension not in allowed_extensions:
-
         raise HTTPException(
-
             status_code=400,
-
             detail=(
                 "Only PDF, PNG, JPG, "
                 "and JPEG files are supported."
             ),
-
         )
 
-
     temp_path = None
-
 
     try:
 
@@ -183,11 +136,8 @@ async def upload_document(
         # -------------------------------------------------
 
         with tempfile.NamedTemporaryFile(
-
             delete=False,
-
             suffix=extension,
-
         ) as temp_file:
 
             shutil.copyfileobj(
@@ -196,7 +146,6 @@ async def upload_document(
             )
 
             temp_path = temp_file.name
-
 
         # -------------------------------------------------
         # STEP 1
@@ -207,7 +156,6 @@ async def upload_document(
             temp_path
         )
 
-
         # -------------------------------------------------
         # STEP 2
         # GPT-5-MINI CLASSIFICATION
@@ -216,7 +164,6 @@ async def upload_document(
         document.document_type = (
             classify_document(document)
         )
-
 
         # -------------------------------------------------
         # STEP 3
@@ -227,84 +174,57 @@ async def upload_document(
             save_document(document)
         )
 
-
         # -------------------------------------------------
         # RESPONSE
         # -------------------------------------------------
 
         return {
-
             "success": True,
 
             "message": (
-
                 "Document processed "
                 "and saved successfully."
-
                 if is_new
-
                 else
-
                 "Document already exists "
                 "in the database."
-
             ),
 
-            "duplicate":
-                not is_new,
+            "duplicate": not is_new,
 
             "document": {
-
-                "id":
-                    saved_document.id,
-
+                "id": saved_document.id,
                 "transaction_id":
                     saved_document.transaction_id,
-
                 "document_type":
                     saved_document.document_type,
-
                 "party_name":
                     saved_document.party_name,
-
                 "transaction_date":
                     saved_document.transaction_date,
-
                 "due_date":
                     saved_document.due_date,
-
                 "subtotal":
                     saved_document.subtotal,
-
                 "tax":
                     saved_document.tax,
-
                 "total_amount":
                     saved_document.total_amount,
-
                 "currency":
                     saved_document.currency,
-
                 "payment_status":
                     saved_document.payment_status,
-
             },
-
         }
-
 
     except Exception as e:
 
         raise HTTPException(
-
             status_code=500,
-
             detail=(
                 f"Document processing failed: {str(e)}"
             ),
-
         )
-
 
     finally:
 
@@ -312,10 +232,7 @@ async def upload_document(
             temp_path
             and os.path.exists(temp_path)
         ):
-
-            os.remove(
-                temp_path
-            )
+            os.remove(temp_path)
 
 
 # =========================================================
@@ -327,60 +244,42 @@ def get_documents():
 
     documents = get_all_documents()
 
-
     return {
-
         "success": True,
 
         "documents": [
-
             {
-
-                "id":
-                    doc.id,
-
+                "id": doc.id,
                 "transaction_id":
                     doc.transaction_id,
-
                 "document_type":
                     doc.document_type,
-
                 "party_name":
                     doc.party_name,
-
                 "transaction_date":
                     doc.transaction_date,
-
                 "due_date":
                     doc.due_date,
-
                 "subtotal":
                     doc.subtotal,
-
                 "tax":
                     doc.tax,
-
                 "total_amount":
                     doc.total_amount,
-
                 "currency":
                     doc.currency,
-
                 "payment_status":
                     doc.payment_status,
-
             }
-
             for doc in documents
-
         ],
-
     }
 
 
 # =========================================================
 # GET SINGLE DOCUMENT
 # =========================================================
+
 @app.get("/api/documents/{document_id}")
 def get_document_details(document_id: int):
 
@@ -404,6 +303,7 @@ def get_document_details(document_id: int):
         "total_amount": document.total_amount,
         "currency": document.currency,
         "payment_status": document.payment_status,
+
         "items": [
             {
                 "id": item.id,
@@ -426,11 +326,8 @@ def analytics_summary():
 
     documents = get_all_documents()
 
-
     return {
-
-        "success":
-            True,
+        "success": True,
 
         "revenue":
             calculate_revenue(
@@ -454,7 +351,6 @@ def analytics_summary():
 
         "document_count":
             len(documents),
-
     }
 
 
@@ -464,61 +360,62 @@ def analytics_summary():
 
 @app.post("/api/reset")
 def reset_demo_data():
+
     try:
+
         reset_database()
 
         return {
             "success": True,
-            "message": "All demo data has been reset successfully."
+            "message":
+                "All demo data has been reset successfully.",
         }
 
     except Exception as e:
+
         raise HTTPException(
             status_code=500,
-            detail=f"Database reset failed: {str(e)}"
+            detail=f"Database reset failed: {str(e)}",
         )
 
 
 # =========================================================
-# AI BUSINESS CHAT
+# AI INVOICE CHAT
 # =========================================================
 
 class ChatRequest(BaseModel):
 
     message: str
 
+    document_id: int
+
 
 @app.post("/api/chat")
-def chat(
-    request: ChatRequest
-):
-
+def chat(request: ChatRequest):
     try:
+        document = get_document_by_id(request.document_id)
+
+        if document is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Selected invoice not found.",
+            )
 
         answer = ask_business_agent(
-            request.message
+            request.message,
+            request.document_id,
         )
 
-
         return {
-
-            "success":
-                True,
-
-            "answer":
-                answer,
-
+            "success": True,
+            "answer": answer,
         }
 
+    except HTTPException:
+        raise
 
     except Exception as e:
-
         raise HTTPException(
-
             status_code=500,
-
-            detail=(
-                f"Chat processing failed: {str(e)}"
-            ),
-
+            detail=f"Chat processing failed: {str(e)}",
         )

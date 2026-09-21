@@ -1,245 +1,163 @@
 import json
+import os
 
-from azure.identity import DefaultAzureCredential
-from azure.ai.projects import AIProjectClient
+from dotenv import load_dotenv
+from openai import OpenAI
 
-from src.database import get_all_documents
-from src.analytics import (
-    calculate_revenue,
-    calculate_purchases,
-    calculate_expenses,
-    calculate_estimated_profit,
+from src.database import get_document_by_id
+
+
+# =========================================================
+# LOAD ENVIRONMENT VARIABLES
+# =========================================================
+
+load_dotenv()
+
+
+# =========================================================
+# AZURE AI FOUNDRY
+# =========================================================
+
+FOUNDRY_ENDPOINT = os.getenv("FOUNDRY_ENDPOINT")
+FOUNDRY_API_KEY = os.getenv("FOUNDRY_API_KEY")
+
+if not FOUNDRY_ENDPOINT:
+    raise RuntimeError(
+        "FOUNDRY_ENDPOINT is not set in the environment."
+    )
+
+if not FOUNDRY_API_KEY:
+    raise RuntimeError(
+        "FOUNDRY_API_KEY is not set in the environment."
+    )
+
+
+# =========================================================
+# OPENAI CLIENT
+# =========================================================
+
+client = OpenAI(
+    api_key=FOUNDRY_API_KEY,
+    base_url=(
+        FOUNDRY_ENDPOINT.rstrip("/")
+        + "/openai/v1/"
+    ),
 )
 
 
-PROJECT_ENDPOINT = (
-    "https://buisnessagent.services.ai.azure.com/"
-    "api/projects/proj-default"
-)
+# =========================================================
+# GET ONLY THE SELECTED INVOICE
+# =========================================================
 
-credential = DefaultAzureCredential()
+def get_invoice(document_id: int):
 
-project = AIProjectClient(
-    endpoint=PROJECT_ENDPOINT,
-    credential=credential,
-)
+    document = get_document_by_id(document_id)
 
+    if document is None:
+        return None
 
-# -----------------------------
-# Get current business data
-# -----------------------------
-
-def get_documents():
-    return get_all_documents()
-
-
-# -----------------------------
-# Business functions
-# -----------------------------
-
-def get_revenue():
-    documents = get_documents()
-    return calculate_revenue(documents)
-
-
-def get_purchases():
-    documents = get_documents()
-    return calculate_purchases(documents)
-
-
-def get_expenses():
-    documents = get_documents()
-    return calculate_expenses(documents)
-
-
-def get_estimated_profit():
-    documents = get_documents()
-    return calculate_estimated_profit(documents)
-
-
-def get_business_summary():
     return {
-        "revenue": get_revenue(),
-        "purchases": get_purchases(),
-        "expenses": get_expenses(),
-        "estimated_profit": get_estimated_profit(),
+        "id": document.id,
+        "transaction_id": document.transaction_id,
+        "document_type": document.document_type,
+        "party_name": document.party_name,
+        "transaction_date": document.transaction_date,
+        "due_date": document.due_date,
+        "subtotal": document.subtotal,
+        "tax": document.tax,
+        "total_amount": document.total_amount,
+        "currency": document.currency,
+        "payment_status": document.payment_status,
+        "items": [
+            {
+                "description": item.description,
+                "quantity": item.quantity,
+                "unit_price": item.unit_price,
+                "amount": item.amount,
+            }
+            for item in document.items
+        ],
     }
 
 
-# -----------------------------
-# Tool definitions for GPT
-# -----------------------------
+# =========================================================
+# ASK BUSINESS AGENT ABOUT ONE INVOICE
+# =========================================================
 
-tools = [
-    {
-        "type": "function",
-        "name": "get_revenue",
-        "description": "Calculate the total sales revenue from the business data.",
-        "parameters": {
-            "type": "object",
-            "properties": {},
-            "additionalProperties": False,
-        },
-    },
-    {
-        "type": "function",
-        "name": "get_purchases",
-        "description": "Calculate the total amount spent on purchases.",
-        "parameters": {
-            "type": "object",
-            "properties": {},
-            "additionalProperties": False,
-        },
-    },
-    {
-        "type": "function",
-        "name": "get_expenses",
-        "description": "Calculate the total business expenses.",
-        "parameters": {
-            "type": "object",
-            "properties": {},
-            "additionalProperties": False,
-        },
-    },
-    {
-        "type": "function",
-        "name": "get_estimated_profit",
-        "description": (
-            "Calculate estimated business profit as "
-            "revenue minus purchases minus expenses."
-        ),
-        "parameters": {
-            "type": "object",
-            "properties": {},
-            "additionalProperties": False,
-        },
-    },
-    {
-        "type": "function",
-        "name": "get_business_summary",
-        "description": (
-            "Return revenue, purchases, expenses, "
-            "and estimated profit."
-        ),
-        "parameters": {
-            "type": "object",
-            "properties": {},
-            "additionalProperties": False,
-        },
-    },
-]
+def ask_business_agent(
+    question: str,
+    document_id: int,
+):
 
+    invoice = get_invoice(document_id)
 
-# -----------------------------
-# Execute requested tool
-# -----------------------------
+    if invoice is None:
+        return "The selected invoice could not be found."
 
-def execute_tool(name):
+    invoice_json = json.dumps(
+        invoice,
+        indent=2,
+        ensure_ascii=False,
+    )
 
-    if name == "get_revenue":
-        return get_revenue()
+    instructions = """
+You are InvoiceIQ's invoice assistant.
 
-    if name == "get_purchases":
-        return get_purchases()
+Your ONLY job is to answer questions about the specific
+invoice provided in the conversation.
 
-    if name == "get_expenses":
-        return get_expenses()
+STRICT RULES:
 
-    if name == "get_estimated_profit":
-        return get_estimated_profit()
+1. Answer ONLY using information contained in the provided invoice.
 
-    if name == "get_business_summary":
-        return get_business_summary()
+2. Do NOT use information from any other invoice or document.
 
-    return {"error": f"Unknown tool: {name}"}
+3. Do NOT answer general business questions.
 
-
-# -----------------------------
-# Ask BuisnessAgent
-# -----------------------------
-
-def ask_business_agent(question):
-
-    with project.get_openai_client() as openai_client:
-
-        response = openai_client.responses.create(
-            model="gpt-5-mini",
-
-            instructions="""
-You are BuisnessAgent, an AI-powered business
-analytics agent.
-
-You have access to tools containing the company's
-financial data.
-
-Rules:
-
-1. Use the available tools whenever the user asks
-   for financial numbers.
-
-2. Never invent financial data.
-
-3. Never calculate financial totals yourself when
-   a tool can provide the result.
-
-4. Clearly distinguish:
+4. Do NOT answer questions about the company's overall:
    - revenue
    - purchases
    - expenses
-   - estimated profit
+   - profit
+   - financial performance
 
-5. Estimated profit is:
-   revenue - purchases - expenses
+   unless that information is explicitly contained in the
+   selected invoice.
 
-6. Give concise business-focused answers.
-""",
+5. Do NOT answer unrelated questions such as:
+   - weather
+   - programming
+   - general knowledge
+   - mathematics unrelated to the invoice
+   - writing requests
+   - personal questions
+   - general business advice
 
-            input=question,
+6. If the question is unrelated to the selected invoice,
+   respond exactly:
 
-            tools=tools,
-        )
+"I can only answer questions about the currently selected invoice."
 
-        # Tool-calling loop
-        while True:
+7. Never invent information.
 
-            tool_calls = [
-                item
-                for item in response.output
-                if item.type == "function_call"
-            ]
+8. If the requested information is not present in the invoice,
+   say:
 
-            if not tool_calls:
-                break
+"That information is not available in the selected invoice."
 
-            tool_outputs = []
+9. You may perform simple arithmetic using values explicitly
+   present in the invoice when necessary to answer a question.
 
-            for tool_call in tool_calls:
+10. Keep answers concise and directly related to the invoice.
 
-                result = execute_tool(tool_call.name)
+SELECTED INVOICE:
 
-                tool_outputs.append(
-                    {
-                        "type": "function_call_output",
-                        "call_id": tool_call.call_id,
-                        "output": json.dumps(result),
-                    }
-                )
+""" + invoice_json
 
-            response = openai_client.responses.create(
-                model="gpt-5-mini",
+    response = client.responses.create(
+        model="gpt-5-mini",
+        instructions=instructions,
+        input=question,
+    )
 
-                instructions="""
-You are BuisnessAgent.
-
-Use the tool results to answer the user's question.
-Do not invent numbers.
-""",
-
-                previous_response_id=response.id,
-
-                input=tool_outputs,
-
-                tools=tools,
-            )
-
-        return response.output_text
+    return response.output_text

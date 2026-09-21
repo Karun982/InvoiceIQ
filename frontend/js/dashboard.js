@@ -10,6 +10,7 @@ const API_URL = "http://127.0.0.1:8000";
 // ============================================================
 
 function escapeHtml(value) {
+
     if (value === null || value === undefined) {
         return "";
     }
@@ -977,6 +978,16 @@ async function openDocumentDetails(
     documentId
 ) {
 
+    // ========================================================
+    // SAVE SELECTED INVOICE FOR AI ASSISTANT
+    // ========================================================
+
+    localStorage.setItem(
+        "selectedDocumentId",
+        String(documentId)
+    );
+
+
     console.log(
         "Opening document:",
         documentId
@@ -1308,6 +1319,37 @@ function renderDocumentDetails(doc) {
         </div>
 
 
+        <!-- ASK AI ABOUT THIS INVOICE -->
+
+        <div
+            style="
+                margin-bottom:24px;
+                padding:16px;
+                border:1px solid #292c38;
+                background:#15171e;
+                border-radius:12px;
+            "
+        >
+            <button
+                type="button"
+                onclick="openInvoiceChat(${Number(doc.id)})"
+                style="
+                    width:100%;
+                    padding:13px 18px;
+                    border:0;
+                    border-radius:10px;
+                    background:#5b4cff;
+                    color:#ffffff;
+                    font-size:14px;
+                    font-weight:700;
+                    cursor:pointer;
+                "
+            >
+                Ask AI about this invoice
+            </button>
+        </div>
+
+
         <!-- LINE ITEMS -->
 
         <div>
@@ -1357,6 +1399,7 @@ function detailCard(
     label,
     value
 ) {
+
 
     const displayValue =
         value === null ||
@@ -1417,6 +1460,7 @@ function financialCard(
     value
 ) {
 
+
     return `
 
         <div
@@ -1466,6 +1510,7 @@ function createItemsTable(
     items,
     currency
 ) {
+
 
     return `
 
@@ -1630,6 +1675,34 @@ function createItemsTable(
         </div>
 
     `;
+}
+
+
+// ============================================================
+// OPEN AI CHAT FOR SELECTED INVOICE
+// ============================================================
+
+function openInvoiceChat(documentId) {
+
+    const id = Number(documentId);
+
+    if (!Number.isInteger(id) || id <= 0) {
+
+        console.error(
+            "Invalid document ID:",
+            documentId
+        );
+
+        return;
+    }
+
+    localStorage.setItem(
+        "selectedDocumentId",
+        String(id)
+    );
+
+    window.location.href =
+        `chat.html?document_id=${encodeURIComponent(id)}`;
 }
 
 
@@ -1842,3 +1915,7 @@ window.openDocumentDetails =
 
 window.closeDocumentDetails =
     closeDocumentDetails;
+
+
+window.openInvoiceChat =
+    openInvoiceChat;

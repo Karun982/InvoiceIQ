@@ -4,12 +4,13 @@
 <head>
 
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>AI Assistant — InvoiceIQ</title>
+    <title>Invoice Assistant — InvoiceIQ</title>
 
     <link
         rel="stylesheet"
@@ -223,6 +224,28 @@
         }
 
 
+        .invoice-context {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-top: 6px;
+
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+
+        .invoice-context-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: var(--primary);
+        }
+
+
         @media (max-width: 800px) {
 
             .chat-panel {
@@ -288,7 +311,8 @@
 
     <a
         href="index.html"
-        class="brand">
+        class="brand"
+    >
 
         <span class="brand-mark">
             IQ
@@ -321,14 +345,12 @@
         <button
             class="theme-toggle"
             data-theme-toggle
-            aria-label="Toggle dark mode">
-
+            aria-label="Toggle dark mode"
+        >
             ☾
-
         </button>
 
     </div>
-
 
 </nav>
 
@@ -339,7 +361,6 @@
 ===================================================== -->
 
 <div class="app-layout">
-
 
 
     <!-- =================================================
@@ -361,7 +382,8 @@
 
         <a
             href="dashboard.html"
-            class="sidebar-link">
+            class="sidebar-link"
+        >
 
             <span class="sidebar-icon">
                 ⌂
@@ -376,7 +398,8 @@
 
         <a
             href="upload.html"
-            class="sidebar-link">
+            class="sidebar-link"
+        >
 
             <span class="sidebar-icon">
                 ↑
@@ -391,7 +414,8 @@
 
         <a
             href="chat.html"
-            class="sidebar-link active">
+            class="sidebar-link active"
+        >
 
             <span class="sidebar-icon">
                 ✦
@@ -412,7 +436,8 @@
 
         <a
             href="index.html"
-            class="sidebar-link">
+            class="sidebar-link"
+        >
 
             <span class="sidebar-icon">
                 ↗
@@ -429,12 +454,12 @@
         <div class="sidebar-bottom">
 
             <strong>
-                BuisnessAgent
+                InvoiceIQ AI
             </strong>
 
             <p>
-                Ask questions about your stored
-                business information.
+                Ask questions about the
+                currently selected invoice.
             </p>
 
         </div>
@@ -464,20 +489,20 @@
 
                     Workspace /
                     <strong>
-                        AI Assistant
+                        Invoice Assistant
                     </strong>
 
                 </div>
 
 
                 <h1 class="page-title">
-                    Ask your business
+                    Ask about your invoice
                 </h1>
 
 
                 <p class="page-subtitle">
-                    Get answers from the financial information
-                    stored in InvoiceIQ.
+                    Get answers using only the currently
+                    selected invoice.
                 </p>
 
             </div>
@@ -489,19 +514,17 @@
 
                 <a
                     href="dashboard.html"
-                    class="btn btn-secondary">
-
+                    class="btn btn-secondary"
+                >
                     ← Dashboard
-
                 </a>
 
 
                 <a
                     href="upload.html"
-                    class="btn btn-primary">
-
+                    class="btn btn-primary"
+                >
                     + Upload document
-
                 </a>
 
 
@@ -541,9 +564,23 @@
 
                     <div class="chat-status">
 
-                        <span class="status-dot"></span>
+                        
 
-                        Connected to business data
+                        <!--  -->
+
+                    </div>
+
+
+                    <div
+                        class="invoice-context"
+                        id="invoice-context"
+                    >
+
+                        
+
+                        <span>
+                            Invoice context will be loaded from the selected document.
+                        </span>
 
                     </div>
 
@@ -560,7 +597,8 @@
 
             <div
                 id="messages"
-                class="messages">
+                class="messages"
+            >
 
 
                 <!-- INITIAL AI MESSAGE -->
@@ -582,9 +620,9 @@
 
 
                         <p>
-                            Hello. I can answer questions about
-                            your revenue, purchases, expenses
-                            and estimated profit.
+                            Hello. I can answer questions
+                            about the currently selected
+                            invoice.
                         </p>
 
 
@@ -607,46 +645,49 @@
 
                 <button
                     type="button"
-                    onclick="useSuggestion('What is my total revenue?')">
-
-                    What is my total revenue?
-
+                    onclick="useSuggestion('What is the total amount of this invoice?')"
+                >
+                    What is the total amount?
                 </button>
 
 
                 <button
                     type="button"
-                    onclick="useSuggestion('How much did we spend on purchases?')">
-
-                    How much did we spend on purchases?
-
+                    onclick="useSuggestion('What is the subtotal of this invoice?')"
+                >
+                    What is the subtotal?
                 </button>
 
 
                 <button
                     type="button"
-                    onclick="useSuggestion('What are our total expenses?')">
-
-                    What are our total expenses?
-
+                    onclick="useSuggestion('What is the tax amount on this invoice?')"
+                >
+                    What is the tax amount?
                 </button>
 
 
                 <button
                     type="button"
-                    onclick="useSuggestion('What is our estimated profit?')">
-
-                    What is our estimated profit?
-
+                    onclick="useSuggestion('What are the line items in this invoice?')"
+                >
+                    What are the line items?
                 </button>
 
 
                 <button
                     type="button"
-                    onclick="useSuggestion('Give me a business summary.')">
+                    onclick="useSuggestion('What is the due date of this invoice?')"
+                >
+                    What is the due date?
+                </button>
 
-                    Give me a business summary.
 
+                <button
+                    type="button"
+                    onclick="useSuggestion('What is the payment status of this invoice?')"
+                >
+                    What is the payment status?
                 </button>
 
 
@@ -660,20 +701,23 @@
 
             <form
                 id="chat-form"
-                class="chat-form">
+                class="chat-form"
+            >
 
 
                 <input
                     id="chat-input"
                     type="text"
-                    placeholder="Ask a business question..."
+                    placeholder="Ask about this invoice..."
                     autocomplete="off"
-                    aria-label="Ask a business question">
+                    aria-label="Ask about this invoice"
+                >
 
 
                 <button
                     class="btn btn-primary"
-                    type="submit">
+                    type="submit"
+                >
 
                     Send →
 
@@ -704,9 +748,11 @@ function useSuggestion(text) {
     const input =
         document.getElementById("chat-input");
 
+
     if (!input) {
         return;
     }
+
 
     input.value = text;
 
@@ -719,10 +765,80 @@ function useSuggestion(text) {
 
 
 <!-- =====================================================
+     INVOICE CONTEXT
+===================================================== -->
+
+<script>
+
+(function () {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const documentId =
+        params.get("document_id");
+
+
+    const context =
+        document.getElementById(
+            "invoice-context"
+        );
+
+
+    if (!context) {
+        return;
+    }
+
+
+    if (
+        documentId &&
+        Number.isInteger(
+            Number(documentId)
+        ) &&
+        Number(documentId) > 0
+    ) {
+
+        context.innerHTML = `
+
+            
+
+            <span>
+                Selected invoice #${documentId}
+            </span>
+
+        `;
+
+    } else {
+
+        context.innerHTML = `
+
+            <span
+                class="invoice-context-dot"
+                style="background:var(--muted);"
+            ></span>
+
+            <span>
+                
+            </span>
+
+        `;
+
+    }
+
+})();
+
+</script>
+
+
+
+<!-- =====================================================
      CHAT JAVASCRIPT
 ===================================================== -->
 
-<script src="js/chat.js"></script>
+<script src="js/chat.js?v=3"></script>
 
 
 </body>

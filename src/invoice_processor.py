@@ -1,25 +1,49 @@
 from datetime import date, datetime
 from typing import Optional
+import os
 
+from dotenv import load_dotenv
 from azure.ai.documentintelligence import DocumentIntelligenceClient
-from azure.identity import DefaultAzureCredential
+from azure.core.credentials import AzureKeyCredential
 
 from src.models import BusinessDocument, InvoiceItem
+
+
+# ============================================================
+# LOAD ENVIRONMENT VARIABLES
+# ============================================================
+
+load_dotenv()
 
 
 # ============================================================
 # AZURE DOCUMENT INTELLIGENCE
 # ============================================================
 
-DOCUMENT_INTELLIGENCE_ENDPOINT = (
-    "https://buisness-store.cognitiveservices.azure.com/"
+DOCUMENT_INTELLIGENCE_ENDPOINT = os.getenv(
+    "DOCUMENT_INTELLIGENCE_ENDPOINT"
 )
 
-credential = DefaultAzureCredential()
+DOCUMENT_INTELLIGENCE_API_KEY = os.getenv(
+    "DOCUMENT_INTELLIGENCE_API_KEY"
+)
+
+if not DOCUMENT_INTELLIGENCE_ENDPOINT:
+    raise RuntimeError(
+        "DOCUMENT_INTELLIGENCE_ENDPOINT is not set."
+    )
+
+if not DOCUMENT_INTELLIGENCE_API_KEY:
+    raise RuntimeError(
+        "DOCUMENT_INTELLIGENCE_API_KEY is not set."
+    )
+
 
 document_client = DocumentIntelligenceClient(
     endpoint=DOCUMENT_INTELLIGENCE_ENDPOINT,
-    credential=credential,
+    credential=AzureKeyCredential(
+        DOCUMENT_INTELLIGENCE_API_KEY
+    ),
 )
 
 

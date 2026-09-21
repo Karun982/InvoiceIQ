@@ -425,16 +425,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
 
-                    results.push({
+                    const uploadedDocument = data.document || data;
 
-                        success: true,
+// Save the successfully uploaded invoice as the
+// currently selected invoice for AI chat.
+if (uploadedDocument.id) {
+    localStorage.setItem(
+        "selectedDocumentId",
+        String(uploadedDocument.id)
+    );
 
-                        file: file.name,
+    console.log(
+        "Selected invoice for AI chat:",
+        uploadedDocument.id
+    );
+}
 
-                        document:
-                            data.document || data
-
-                    });
+results.push({
+    success: true,
+    file: file.name,
+    document: uploadedDocument
+});
 
 
                 } catch (error) {
