@@ -2,10 +2,13 @@ import os
 import shutil
 import tempfile
 
+from typing import Optional
+
 from fastapi import (
     FastAPI,
     UploadFile,
     File,
+    Form,
     HTTPException,
 )
 
@@ -104,7 +107,8 @@ def health():
 
 @app.post("/api/documents/upload")
 async def upload_document(
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
+    document_type: Optional[str] = Form(None),
 ):
 
     allowed_extensions = {
@@ -158,12 +162,22 @@ async def upload_document(
 
         # -------------------------------------------------
         # STEP 2
-        # GPT-5-MINI CLASSIFICATION
+        # SET OR CLASSIFY DOCUMENT TYPE
         # -------------------------------------------------
 
-        document.document_type = (
-            classify_document(document)
-        )
+        allowed_types = {"SALES", "PURCHASE"}
+        user_type = (document_type or "").strip().upper()
+
+        if user_type in allowed_types:
+            document.document_type = user_type
+        else:
+            try:
+                document.document_type = (
+                    classify_document(document)
+                )
+            except Exception as e:
+                print(f"Classification fallback to OTHER: {e}")
+                document.document_type = "OTHER"
 
         # -------------------------------------------------
         # STEP 3

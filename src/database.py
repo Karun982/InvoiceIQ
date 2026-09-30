@@ -198,6 +198,14 @@ def save_document(document):
 
         if existing_document:
 
+            if (
+                document.document_type
+                and document.document_type != existing_document.document_type
+            ):
+                existing_document.document_type = document.document_type
+                db.commit()
+                db.refresh(existing_document)
+
             return existing_document, False
 
 

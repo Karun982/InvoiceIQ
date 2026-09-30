@@ -77,6 +77,41 @@ async function getSelectedDocumentId() {
   }
 }
 
+async function loadInvoiceContext() {
+  const contextEl = document.getElementById("invoice-context");
+  if (!contextEl) return;
+
+  try {
+    const selectedId = await getSelectedDocumentId();
+
+    if (!selectedId) {
+      contextEl.innerHTML = `<span>No invoice selected. <a href="upload.html" style="color:var(--primary);text-decoration:underline;">Upload a document</a> to start.</span>`;
+      return;
+    }
+
+    const res = await fetch(`${API_URL}/api/documents/${selectedId}`);
+    if (!res.ok) return;
+
+    const doc = await res.json();
+    const typeClass = (doc.document_type || "other").toLowerCase();
+
+    contextEl.innerHTML = `
+      <span>
+        <strong>Invoice #${doc.transaction_id || doc.id}</strong>
+        <span class="result-type-badge badge-${typeClass}">${doc.document_type || "INVOICE"}</span>
+        ${doc.party_name ? ` · ${doc.party_name}` : ""}
+      </span>
+    `;
+  } catch (err) {
+    console.warn("Could not display invoice context:", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadInvoiceContext);
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  loadInvoiceContext();
+}
+
 function addMessage(text, type) {
   const el = document.createElement("div");
   el.className = `message ${type}`;

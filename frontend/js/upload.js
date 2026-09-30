@@ -29,6 +29,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // =====================================================
+    // INVOICE TYPE SELECTION
+    // =====================================================
+
+    const typeCards =
+        document.querySelectorAll(".type-option-card");
+
+    function getActiveInvoiceType() {
+        const checked =
+            document.querySelector('input[name="invoice-type-radio"]:checked');
+
+        return checked ? checked.value : "SALES";
+    }
+
+    typeCards.forEach(function (card) {
+        card.addEventListener("click", function () {
+            typeCards.forEach(function (c) {
+                c.classList.remove("active");
+            });
+
+            card.classList.add("active");
+
+            const radio =
+                card.querySelector('input[type="radio"]');
+
+            if (radio) {
+                radio.checked = true;
+            }
+
+            const chosenType = getActiveInvoiceType();
+
+            // Update all currently selected files
+            selectedFiles.forEach(function (f) {
+                f.documentType = chosenType;
+            });
+
+            renderSelectedFiles();
+        });
+    });
+
+
+    // =====================================================
     // CHOOSE DOCUMENTS
     // =====================================================
 
@@ -88,6 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             if (!alreadyExists) {
+                file.documentType = getActiveInvoiceType();
                 selectedFiles.push(file);
             }
 
@@ -175,6 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                     if (!alreadyExists) {
+                        file.documentType = getActiveInvoiceType();
                         selectedFiles.push(file);
                     }
 
@@ -225,6 +268,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selectedFiles.forEach(function (file, index) {
 
+            if (!file.documentType) {
+                file.documentType = getActiveInvoiceType();
+            }
+
             const row =
                 document.createElement("div");
 
@@ -257,14 +304,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
 
 
-                <button
-                    type="button"
-                    class="remove-file-btn"
-                    data-index="${index}"
-                    title="Remove document"
-                >
-                    ×
-                </button>
+                <div class="selected-file-actions">
+
+                    <select
+                        class="file-type-select"
+                        data-index="${index}"
+                        title="Change invoice type for this document"
+                    >
+                        <option value="SALES" ${file.documentType === "SALES" ? "selected" : ""}>Sales</option>
+                        <option value="PURCHASE" ${file.documentType === "PURCHASE" ? "selected" : ""}>Purchase</option>
+                    </select>
+
+                    <button
+                        type="button"
+                        class="remove-file-btn"
+                        data-index="${index}"
+                        title="Remove document"
+                    >
+                        ×
+                    </button>
+
+                </div>
 
             `;
 
@@ -272,6 +332,29 @@ document.addEventListener("DOMContentLoaded", function () {
             filesList.appendChild(row);
 
         });
+
+
+        // =================================================
+        // PER-FILE INVOICE TYPE CHANGE
+        // =================================================
+
+        filesList
+            .querySelectorAll(".file-type-select")
+            .forEach(function (select) {
+
+                select.addEventListener("change", function () {
+
+                    const index =
+                        Number(select.dataset.index);
+
+                    if (selectedFiles[index]) {
+                        selectedFiles[index].documentType =
+                            select.value;
+                    }
+
+                });
+
+            });
 
 
         // =================================================
@@ -376,6 +459,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 `;
 
 
+                const docType =
+                    file.documentType ||
+                    getActiveInvoiceType() ||
+                    "SALES";
+
                 try {
 
                     const formData =
@@ -385,6 +473,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     formData.append(
                         "file",
                         file
+                    );
+
+                    formData.append(
+                        "document_type",
+                        docType
                     );
 
 
@@ -444,7 +537,8 @@ if (uploadedDocument.id) {
 results.push({
     success: true,
     file: file.name,
-    document: uploadedDocument
+    document: uploadedDocument,
+    documentType: docType
 });
 
 
@@ -465,7 +559,9 @@ results.push({
 
                         error:
                             error.message ||
-                            "Processing failed."
+                            "Processing failed.",
+
+                        documentType: docType
 
                     });
 
@@ -553,10 +649,13 @@ results.push({
 
 
                                         <span>
-                                            ${escapeHtml(
-                                                doc.document_type ||
-                                                "OTHER"
-                                            )}
+                                            <span class="result-type-badge badge-${(doc.document_type || item.documentType || 'other').toLowerCase()}">
+                                                ${escapeHtml(
+                                                    doc.document_type ||
+                                                    item.documentType ||
+                                                    "OTHER"
+                                                )}
+                                            </span>
 
                                             ·
 
@@ -590,6 +689,12 @@ results.push({
 
 
                                     <span>
+                                        <span class="result-type-badge badge-${(item.documentType || 'other').toLowerCase()}">
+                                            ${escapeHtml(item.documentType || "OTHER")}
+                                        </span>
+
+                                        ·
+
                                         ${escapeHtml(
                                             item.error
                                         )}
@@ -625,11 +730,11 @@ results.push({
                     successful.length > 0
                         ? `
                             <a
-                                href="dashboard.html"
+                                href="chat.html"
                                 class="btn btn-primary"
                                 style="margin-top:12px;"
                             >
-                                View dashboard →
+                                Open AI Assistant →
                             </a>
                         `
                         : ""

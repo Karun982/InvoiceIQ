@@ -150,6 +150,12 @@ STRICT RULES:
 
 10. Keep answers concise and directly related to the invoice.
 
+11. INVOICE CLASSIFICATION & CONTEXT:
+    The "document_type" field indicates whether this document is a:
+    - "SALES" invoice: represents money earned/revenue from a customer or client.
+    - "PURCHASE" invoice: represents money spent to purchase goods, equipment, or materials from a supplier or vendor.
+    Use this classification to understand the transaction context and clearly answer questions about whether this document is a sales or purchase invoice. Note that operational expenses are generated/calculated by the business agent.
+
 SELECTED INVOICE:
 
 """ + invoice_json

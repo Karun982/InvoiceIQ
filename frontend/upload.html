@@ -42,10 +42,6 @@
 
     <div class="nav-links">
 
-        <a href="dashboard.html">
-            Dashboard
-        </a>
-
         <a
             href="upload.html"
             class="active">
@@ -100,20 +96,6 @@
             Workspace
         </div>
 
-
-        <a
-            href="dashboard.html"
-            class="sidebar-link">
-
-            <span class="sidebar-icon">
-                ⌂
-            </span>
-
-            <span>
-                Overview
-            </span>
-
-        </a>
 
 
         <a
@@ -236,14 +218,6 @@
                 ">
 
 
-                <a
-                    href="dashboard.html"
-                    class="btn btn-secondary">
-
-                    ← Dashboard
-
-                </a>
-
 
                 <a
                     href="chat.html"
@@ -275,6 +249,58 @@
             <section class="panel upload-panel">
 
 
+                <!-- =================================================
+                     INVOICE TYPE SELECTOR
+                ================================================== -->
+                <div class="invoice-type-selection">
+
+                    <div class="section-label">
+                        <span>Invoice Type</span>
+                        <span class="required-tag">Required</span>
+                    </div>
+
+                    <p class="section-hint">
+                        Select the invoice type so the AI model understands whether this document represents sales revenue or a supplier purchase:
+                    </p>
+
+                    <div class="type-options-grid">
+
+                        <label class="type-option-card active" data-type="SALES">
+                            <input
+                                type="radio"
+                                name="invoice-type-radio"
+                                value="SALES"
+                                checked
+                            >
+                            <div class="type-option-top">
+                                <span class="type-option-badge badge-sales">
+                                    ↗ Sales
+                                </span>
+                            </div>
+                            <strong>Sales Invoice</strong>
+                            <span>Customer invoice, revenue earned</span>
+                        </label>
+
+                        <label class="type-option-card" data-type="PURCHASE">
+                            <input
+                                type="radio"
+                                name="invoice-type-radio"
+                                value="PURCHASE"
+                            >
+                            <div class="type-option-top">
+                                <span class="type-option-badge badge-purchase">
+                                    ↓ Purchase
+                                </span>
+                            </div>
+                            <strong>Purchase Invoice</strong>
+                            <span>Vendor invoice, goods/supplies bought</span>
+                        </label>
+
+                    </div>
+
+                </div>
+
+
                 <!-- DROPZONE -->
 
                 <div
@@ -294,9 +320,8 @@
 
                     <p>
                         Select one or multiple PDF, JPG,
-                        JPEG or PNG invoices. InvoiceIQ
-                        will extract and classify them
-                        automatically.
+                        JPEG or PNG invoices to process with
+                        the selected invoice type.
                     </p>
 
 
@@ -457,12 +482,12 @@
                             <div>
 
                                 <strong>
-                                    Classify
+                                    Classify & Context
                                 </strong>
 
                                 <p>
-                                    Identify sales,
-                                    purchase or expense.
+                                    Assign invoice type (sales or purchase)
+                                    for accurate AI model understanding.
                                 </p>
 
                             </div>
