@@ -609,7 +609,8 @@ results.push({
                 <h3
                     style="
                         margin-bottom:16px;
-                        font-family:'Space Grotesk',sans-serif;
+                        font-weight:800;
+                        color:var(--forest);
                     "
                 >
                     ${
@@ -663,6 +664,12 @@ results.push({
                                                 doc.total_amount
                                             )}
                                         </span>
+
+                                        ${
+                                            doc && doc.id
+                                                ? `<a href="chat.html?document_id=${doc.id}" class="btn btn-secondary" style="font-size:11px;padding:4px 10px;height:auto;margin-left:12px;">Audit with AI →</a>`
+                                                : ""
+                                        }
 
                                     </div>
 
@@ -730,11 +737,11 @@ results.push({
                     successful.length > 0
                         ? `
                             <a
-                                href="chat.html"
+                                href="chat.html?document_id=${successful[0].document && successful[0].document.id ? successful[0].document.id : ''}"
                                 class="btn btn-primary"
                                 style="margin-top:12px;"
                             >
-                                Open AI Assistant →
+                                Open AI Assistant for Processed Invoice →
                             </a>
                         `
                         : ""

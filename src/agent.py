@@ -84,6 +84,10 @@ def get_invoice(document_id: int):
 # ASK BUSINESS AGENT ABOUT ONE INVOICE
 # =========================================================
 
+def ask_agent(question: str, document_id: int = 1):
+    return ask_business_agent(question, document_id)
+
+
 def ask_business_agent(
     question: str,
     document_id: int,
