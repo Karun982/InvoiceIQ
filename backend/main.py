@@ -34,7 +34,13 @@ from src.analytics import (
     calculate_revenue,
     calculate_purchases,
     calculate_expenses,
+    calculate_net_balance,
     calculate_estimated_profit,
+    calculate_sales_tax,
+    calculate_purchase_tax,
+    calculate_total_tax,
+    calculate_sales_subtotal,
+    calculate_purchase_subtotal,
 )
 
 
@@ -181,11 +187,11 @@ async def upload_document(
 
         # -------------------------------------------------
         # STEP 3
-        # SAVE TO SQLITE
+        # SAVE TO SQLITE (UPDATING IF ALREADY PRESENT)
         # -------------------------------------------------
 
         saved_document, is_new = (
-            save_document(document)
+            save_document(document, update_existing=True)
         )
 
         # -------------------------------------------------
@@ -222,6 +228,8 @@ async def upload_document(
                     saved_document.subtotal,
                 "tax":
                     saved_document.tax,
+                "is_tax_inferred":
+                    getattr(saved_document, "is_tax_inferred", False),
                 "total_amount":
                     saved_document.total_amount,
                 "currency":
@@ -278,6 +286,8 @@ def get_documents():
                     doc.subtotal,
                 "tax":
                     doc.tax,
+                "is_tax_inferred":
+                    getattr(doc, "is_tax_inferred", False),
                 "total_amount":
                     doc.total_amount,
                 "currency":
@@ -314,6 +324,7 @@ def get_document_details(document_id: int):
         "due_date": document.due_date,
         "subtotal": document.subtotal,
         "tax": document.tax,
+        "is_tax_inferred": getattr(document, "is_tax_inferred", False),
         "total_amount": document.total_amount,
         "currency": document.currency,
         "payment_status": document.payment_status,
@@ -325,6 +336,9 @@ def get_document_details(document_id: int):
                 "quantity": item.quantity,
                 "unit_price": item.unit_price,
                 "amount": item.amount,
+                "raw_ocr_amount": getattr(item, "raw_ocr_amount", None),
+                "is_inconsistent": getattr(item, "is_inconsistent", False),
+                "inconsistency_note": getattr(item, "inconsistency_note", None),
             }
             for item in document.items
         ],
@@ -343,28 +357,17 @@ def analytics_summary():
     return {
         "success": True,
 
-        "revenue":
-            calculate_revenue(
-                documents
-            ),
-
-        "purchases":
-            calculate_purchases(
-                documents
-            ),
-
-        "expenses":
-            calculate_expenses(
-                documents
-            ),
-
-        "estimated_profit":
-            calculate_estimated_profit(
-                documents
-            ),
-
-        "document_count":
-            len(documents),
+        "revenue": calculate_revenue(documents),
+        "purchases": calculate_purchases(documents),
+        "expenses": calculate_expenses(documents),
+        "net_balance": calculate_net_balance(documents),
+        "estimated_profit": calculate_estimated_profit(documents),
+        "sales_subtotal": calculate_sales_subtotal(documents),
+        "purchase_subtotal": calculate_purchase_subtotal(documents),
+        "sales_tax": calculate_sales_tax(documents),
+        "purchase_tax": calculate_purchase_tax(documents),
+        "total_tax": calculate_total_tax(documents),
+        "document_count": len(documents),
     }
 
 
@@ -398,22 +401,20 @@ def reset_demo_data():
 # =========================================================
 
 class ChatRequest(BaseModel):
-
     message: str
-
-    document_id: int
+    document_id: Optional[int] = None
 
 
 @app.post("/api/chat")
 def chat(request: ChatRequest):
     try:
-        document = get_document_by_id(request.document_id)
-
-        if document is None:
-            raise HTTPException(
-                status_code=404,
-                detail="Selected invoice not found.",
-            )
+        if request.document_id is not None:
+            document = get_document_by_id(request.document_id)
+            if document is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Selected invoice not found.",
+                )
 
         answer = ask_business_agent(
             request.message,

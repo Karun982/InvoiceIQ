@@ -7,6 +7,9 @@ class InvoiceItem(BaseModel):
     quantity: Optional[float] = None
     unit_price: Optional[float] = None
     amount: Optional[float] = None
+    raw_ocr_amount: Optional[float] = None
+    is_inconsistent: Optional[bool] = False
+    inconsistency_note: Optional[str] = None
 
 
 class BusinessDocument(BaseModel):
@@ -18,6 +21,7 @@ class BusinessDocument(BaseModel):
 
     subtotal: Optional[float] = None
     tax: Optional[float] = None
+    is_tax_inferred: Optional[bool] = False
     total_amount: Optional[float] = None
 
     currency: Optional[str] = None

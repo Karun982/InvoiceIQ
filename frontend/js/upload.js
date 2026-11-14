@@ -520,19 +520,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const uploadedDocument = data.document || data;
 
-// Save the successfully uploaded invoice as the
-// currently selected invoice for AI chat.
-if (uploadedDocument.id) {
-    localStorage.setItem(
-        "selectedDocumentId",
-        String(uploadedDocument.id)
-    );
 
-    console.log(
-        "Selected invoice for AI chat:",
-        uploadedDocument.id
-    );
-}
 
 results.push({
     success: true,
@@ -665,11 +653,7 @@ results.push({
                                             )}
                                         </span>
 
-                                        ${
-                                            doc && doc.id
-                                                ? `<a href="chat.html?document_id=${doc.id}" class="btn btn-secondary" style="font-size:11px;padding:4px 10px;height:auto;margin-left:12px;">Audit with AI →</a>`
-                                                : ""
-                                        }
+
 
                                     </div>
 
@@ -737,11 +721,11 @@ results.push({
                     successful.length > 0
                         ? `
                             <a
-                                href="chat.html?document_id=${successful[0].document && successful[0].document.id ? successful[0].document.id : ''}"
+                                href="chat.html"
                                 class="btn btn-primary"
                                 style="margin-top:12px;"
                             >
-                                Open AI Assistant for Processed Invoice →
+                                Open AI Assistant (${successful.length} ${successful.length === 1 ? 'Invoice' : 'Invoices'} Ready) →
                             </a>
                         `
                         : ""

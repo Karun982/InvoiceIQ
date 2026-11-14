@@ -76,9 +76,9 @@
                     FINANCE / <strong>AI ASSISTANT</strong>
                 </div>
 
-                <h1 class="page-title">Ask about your invoice</h1>
+                <h1 class="page-title">Financial Intelligence Assistant</h1>
                 <p class="page-subtitle">
-                    Get answers, itemize line items, and audit tax calculations using only the currently selected invoice.
+                    Ask questions, reconcile sales vs purchases, audit line items, and verify taxes across all your uploaded documents.
                 </p>
             </div>
 
@@ -104,14 +104,14 @@
 
                     <div class="invoice-context" id="invoice-context">
                         <span class="invoice-context-dot" id="invoice-context-dot" style="display:none;"></span>
-                        <span id="invoice-context-text">No document selected.</span>
+                        <span id="invoice-context-text">Loading ledger context...</span>
                     </div>
                 </div>
 
-                <div class="chat-header-actions" style="display:flex;align-items:center;gap:10px;">
-                    <select id="invoice-selector" class="doc-switcher-select" title="Select an invoice to audit">
-                        <option value="">— No invoice selected —</option>
-                    </select>
+                <div class="chat-header-actions">
+                    <a href="upload.html" class="btn btn-secondary" style="font-size:12px;padding:6px 14px;height:auto;">
+                        + Upload invoices
+                    </a>
                 </div>
             </div>
 
@@ -121,7 +121,7 @@
                     <span class="message-label">INVOICEIQ AI</span>
                     <div class="message-content">
                         <p>
-                            Hello. I can answer questions about the currently selected invoice, verify totals, break down taxes, and confirm whether it is classified as a sales invoice or purchase invoice.
+                            Hello. I am your financial intelligence assistant. I analyze all your uploaded sales and purchase invoices—calculating total revenues vs expenses, auditing line items, comparing tax collections vs payments, or deep-diving into any individual document.
                         </p>
                     </div>
                 </div>
@@ -129,23 +129,20 @@
 
             <!-- QUICK SUGGESTIONS -->
             <div class="suggestions">
-                <button type="button" onclick="useSuggestion('Is this a sales or purchase invoice?')">
-                    Sales or purchase?
+                <button type="button" onclick="useSuggestion('What is my total sales vs total purchases?')">
+                    Sales vs Purchases
                 </button>
-                <button type="button" onclick="useSuggestion('What is the total amount of this invoice?')">
-                    What is the total amount?
+                <button type="button" onclick="useSuggestion('Summarize all uploaded invoices and net balance')">
+                    Summarize Invoices & Net Balance
                 </button>
-                <button type="button" onclick="useSuggestion('What is the subtotal of this invoice?')">
-                    What is the subtotal?
+                <button type="button" onclick="useSuggestion('How much tax was collected vs paid?')">
+                    Tax Breakdown
                 </button>
-                <button type="button" onclick="useSuggestion('What is the tax amount on this invoice?')">
-                    What is the tax amount?
+                <button type="button" onclick="useSuggestion('What are the line items in my purchase invoices?')">
+                    Purchase Line Items
                 </button>
-                <button type="button" onclick="useSuggestion('What are the line items in this invoice?')">
-                    What are the line items?
-                </button>
-                <button type="button" onclick="useSuggestion('What is the due date of this invoice?')">
-                    What is the due date?
+                <button type="button" onclick="useSuggestion('List all clients and vendor parties')">
+                    Vendors & Clients
                 </button>
             </div>
 
@@ -154,9 +151,9 @@
                 <input
                     id="chat-input"
                     type="text"
-                    placeholder="Ask about this invoice (e.g. 'What is the total amount?' or 'List the line items')..."
+                    placeholder="Ask about your invoices (e.g. 'Compare sales vs purchases' or 'What are the items in Invoice #1?')..."
                     autocomplete="off"
-                    aria-label="Ask about this invoice"
+                    aria-label="Ask about your invoices"
                 >
                 <button class="btn btn-primary" type="submit">
                     Send →

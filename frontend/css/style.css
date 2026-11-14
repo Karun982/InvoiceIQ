@@ -1192,44 +1192,7 @@ html[data-theme="dark"] .result-type-badge.badge-other {
     border: 1px solid #3f3f46;
 }
 
-/* Document switcher in chat header */
-.doc-switcher-select {
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    border: 1.5px solid var(--border-strong);
-    background: var(--surface);
-    color: var(--text);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    outline: none;
-    transition: all 0.15s ease;
-    max-width: 290px;
-}
 
-.doc-switcher-select:focus {
-    border-color: var(--forest);
-}
-
-.btn-clear-doc {
-    background: transparent;
-    border: 1px solid var(--border-strong);
-    color: var(--text-muted);
-    border-radius: var(--radius-sm);
-    padding: 2px 8px;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    margin-left: 8px;
-    vertical-align: middle;
-}
-
-.btn-clear-doc:hover {
-    color: #e05a36;
-    border-color: #e05a36;
-    background: rgba(224, 90, 54, 0.08);
-}
 
 .type-option-card strong {
     font-size: 14.5px;

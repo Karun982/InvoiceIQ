@@ -18,3 +18,4 @@ data/invoices/*
 .vscode/
 .idea/
 CODEBASE_WALKTHROUGH.txt
+PROJECT_CONTEXT.md
