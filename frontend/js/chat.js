@@ -17,19 +17,158 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
+// -------------------------------------------------------------
+// STRUCTURED MARKDOWN & FINANCIAL TEXT FORMATTER
+// -------------------------------------------------------------
+
+function formatMarkdown(raw) {
+  if (!raw) return "";
+
+  // 1. Normalize line breaks and escape HTML for security
+  let text = escapeHtml(String(raw).replace(/\r\n/g, "\n"));
+
+  // 2. Headings
+  text = text.replace(/^### (.*$)/gim, '<h4 class="chat-heading">$1</h4>');
+  text = text.replace(/^## (.*$)/gim, '<h3 class="chat-heading">$1</h3>');
+  text = text.replace(/^# (.*$)/gim, '<h3 class="chat-heading">$1</h3>');
+
+  // 3. Bold & Italic
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/__(.*?)__/g, '<strong>$1</strong>');
+  text = text.replace(/(^|[^\*])\*([^\*]+)\*([^\*]|$)/g, '$1<em>$2</em>$3');
+
+  // 4. Inline code
+  text = text.replace(/`([^`]+)`/g, '<code class="chat-code">$1</code>');
+
+  // 5. Arrow transforms
+  text = text.replace(/\s*->\s*/g, ' → ');
+
+  // 6. Line by line parsing for lists, headers and paragraphs
+  const lines = text.split("\n");
+  let out = [];
+  let inUl = false;
+  let inOl = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
+    const trimmed = rawLine.trim();
+
+    if (!trimmed) {
+      if (inUl) { out.push("</ul>"); inUl = false; }
+      if (inOl) { out.push("</ol>"); inOl = false; }
+      continue;
+    }
+
+    const ulMatch = trimmed.match(/^[-*•]\s+(.*)$/);
+    const olMatch = trimmed.match(/^(\d+)[\.\)]\s+(.*)$/);
+
+    if (ulMatch) {
+      if (inOl) { out.push("</ol>"); inOl = false; }
+      if (!inUl) { out.push('<ul class="chat-list">'); inUl = true; }
+      out.push(`<li>${ulMatch[1]}</li>`);
+    } else if (olMatch) {
+      if (inUl) { out.push("</ul>"); inUl = false; }
+      if (!inOl) { out.push('<ol class="chat-list">'); inOl = true; }
+      out.push(`<li>${olMatch[2]}</li>`);
+    } else if (trimmed.startsWith("<h3") || trimmed.startsWith("<h4")) {
+      if (inUl) { out.push("</ul>"); inUl = false; }
+      if (inOl) { out.push("</ol>"); inOl = false; }
+      out.push(trimmed);
+    } else {
+      if (inUl) { out.push("</ul>"); inUl = false; }
+      if (inOl) { out.push("</ol>"); inOl = false; }
+
+      // Emphasize financial labels if not already bold
+      let formatted = trimmed.replace(
+        /^(Invoice|Party|Transaction date|Due date|Currency|Subtotal|GST|Tax|Total|Net Balance|Status|Discrepancies|Verification|Line items|Summation and comparison):/i,
+        '<strong>$1:</strong>'
+      );
+
+      out.push(`<p class="chat-p">${formatted}</p>`);
+    }
+  }
+
+  if (inUl) out.push("</ul>");
+  if (inOl) out.push("</ol>");
+
+  return out.join("");
+}
+
+// -------------------------------------------------------------
+// CHAT MESSAGE RENDERING & INTELLIGENT SCROLLING
+// -------------------------------------------------------------
+
 function addMessage(text, type) {
   const el = document.createElement("div");
   el.className = `message ${type}`;
 
   if (type === "ai") {
-    el.innerHTML = `<div class="message-avatar">IQ</div><div class="message-content"><span class="message-label">InvoiceIQ AI</span><p></p></div>`;
+    el.innerHTML = `
+      <div class="message-meta">
+        <span class="message-badge">IQ</span>
+        <span class="message-label">InvoiceIQ AI</span>
+      </div>
+      <div class="message-content">
+        <div class="message-body">${formatMarkdown(text)}</div>
+      </div>
+    `;
   } else {
-    el.innerHTML = `<div class="message-content"><p></p></div>`;
+    el.innerHTML = `
+      <div class="message-content">
+        <div class="message-body">${formatMarkdown(text)}</div>
+      </div>
+    `;
   }
 
-  el.querySelector("p").textContent = text;
   messages.appendChild(el);
-  messages.scrollTop = messages.scrollHeight;
+
+  // Strictly container-internal smooth scroll (never touches window scroll offset)
+  requestAnimationFrame(() => {
+    if (type === "user") {
+      messages.scrollTo({ top: messages.scrollHeight, behavior: "smooth" });
+    } else {
+      const containerHeight = messages.clientHeight;
+      const elHeight = el.clientHeight;
+      if (elHeight > containerHeight * 0.6) {
+        // Long response: show the top so the user can read from line 1
+        const targetTop = el.offsetTop - messages.offsetTop - 12;
+        messages.scrollTo({
+          top: targetTop > 0 ? targetTop : 0,
+          behavior: "smooth"
+        });
+      } else {
+        // Short response: scroll to show the complete response
+        messages.scrollTo({ top: messages.scrollHeight, behavior: "smooth" });
+      }
+    }
+  });
+}
+
+function showTypingIndicator() {
+  removeTypingIndicator();
+  const el = document.createElement("div");
+  el.className = "message ai typing-indicator";
+  el.id = "chat-typing-indicator";
+  el.innerHTML = `
+    <div class="message-meta">
+      <span class="message-badge">IQ</span>
+      <span class="message-label">InvoiceIQ AI</span>
+    </div>
+    <div class="message-content">
+      <div class="typing-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  `;
+  messages.appendChild(el);
+  requestAnimationFrame(() => {
+    messages.scrollTo({ top: messages.scrollHeight, behavior: "smooth" });
+  });
+}
+
+function removeTypingIndicator() {
+  const el = document.getElementById("chat-typing-indicator");
+  if (el) el.remove();
 }
 
 // -------------------------------------------------------------
@@ -65,9 +204,6 @@ function renderActiveContext() {
   );
   const purchaseInvoices = allDocuments.filter(
     d => (d.document_type || "").toUpperCase() === "PURCHASE"
-  );
-  const otherInvoices = allDocuments.filter(
-    d => !["SALES", "PURCHASE"].includes((d.document_type || "").toUpperCase())
   );
 
   if (badgeEl) {
@@ -145,6 +281,8 @@ async function sendMessage(q) {
     return;
   }
 
+  showTypingIndicator();
+
   try {
     const res = await fetch(`${API_URL}/api/chat`, {
       method: "POST",
@@ -157,6 +295,7 @@ async function sendMessage(q) {
     });
 
     const data = await res.json();
+    removeTypingIndicator();
 
     if (!res.ok) {
       throw new Error(
@@ -168,6 +307,7 @@ async function sendMessage(q) {
 
     addMessage(data.answer || "No answer returned.", "ai");
   } catch (e) {
+    removeTypingIndicator();
     addMessage(`Unable to connect to InvoiceIQ AI: ${e.message}`, "ai");
   }
 }
@@ -193,16 +333,18 @@ if (form) {
   });
 }
 
-document.querySelectorAll(".suggestions button").forEach(b => {
-  b.onclick = () => {
-    const text = b.getAttribute("onclick")
-      ? b.getAttribute("onclick").match(/'([^']+)'/)?.[1] || b.textContent.trim()
-      : b.textContent.trim();
-    sendMessage(text);
-  };
-});
+// Prevent outer window scrolling on dedicated chat console
+window.addEventListener("scroll", () => {
+  if (window.scrollY !== 0 || window.scrollX !== 0) {
+    window.scrollTo(0, 0);
+  }
+}, { passive: true });
 
-document.addEventListener("DOMContentLoaded", loadLedgerContext);
+document.addEventListener("DOMContentLoaded", () => {
+  window.scrollTo(0, 0);
+  loadLedgerContext();
+});
 if (document.readyState === "complete" || document.readyState === "interactive") {
+  window.scrollTo(0, 0);
   loadLedgerContext();
 }

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="chat-page">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Assistant — InvoiceIQ</title>
-    <link rel="stylesheet" href="css/style.css?v=40">
+    <link rel="stylesheet" href="css/style.css?v=43">
     <script src="js/theme.js"></script>
 </head>
-<body>
+<body class="chat-page">
 
 <!-- TOP NAVIGATION -->
 <nav class="navbar">
@@ -118,11 +118,16 @@
             <!-- CHAT STREAM -->
             <div id="messages" class="messages">
                 <div class="message ai">
-                    <span class="message-label">INVOICEIQ AI</span>
+                    <div class="message-meta">
+                        <span class="message-badge">IQ</span>
+                        <span class="message-label">InvoiceIQ AI</span>
+                    </div>
                     <div class="message-content">
-                        <p>
-                            Hello. I am your financial intelligence assistant. I analyze all your uploaded sales and purchase invoices—calculating total revenues vs expenses, auditing line items, comparing tax collections vs payments, or deep-diving into any individual document.
-                        </p>
+                        <div class="message-body">
+                            <p class="chat-p">
+                                Hello. I am your financial intelligence assistant. I analyze all your uploaded sales and purchase invoices—calculating total revenues vs expenses, auditing line items, comparing tax collections vs payments, or deep-diving into any individual document.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -174,7 +179,7 @@ function useSuggestion(text) {
 }
 </script>
 
-<script src="js/chat.js?v=40"></script>
+<script src="js/chat.js?v=43"></script>
 
 </body>
 </html>
